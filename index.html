@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HCM Metadata — EBS 58</title>
+<style>
+  :root{
+    --bg:#0e1116; --bg2:#161b22; --bg3:#1c232d; --border:#232b36; --border2:#2f3a48;
+    --text:#e6edf3; --muted:#8b98a8; --accent:#4f9cf9; --green:#34d399; --yellow:#fbbf24;
+    --red:#f87171; --orange:#fb923c; --pink:#db2777; --purple:#a78bfa; --teal:#2dd4bf;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+  a{color:var(--accent)}
+
+  header{padding:14px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+  header h1{font-size:18px;font-weight:700;display:flex;align-items:center;gap:9px}
+  header .sub{font-size:12px;color:var(--muted);font-weight:400}
+  .hactions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+  .sync-status{font-size:11px;padding:4px 10px;border-radius:12px;font-weight:600}
+  .sync-status.saved{color:var(--green);background:rgba(52,211,153,.12)}
+  .sync-status.saving{color:var(--yellow);background:rgba(251,191,36,.12)}
+  .sync-status.error{color:var(--red);background:rgba(248,113,113,.12)}
+
+  .btn{padding:8px 15px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+  .btn-primary{background:var(--accent);color:#04121f}
+  .btn-primary:hover{filter:brightness(1.08)}
+  .btn-sec{background:var(--bg3);color:var(--text);border:1px solid var(--border2)}
+  .btn-sec:hover{background:#232c38}
+  .btn-danger{background:transparent;color:var(--red);border:1px solid var(--border2)}
+  .btn-danger:hover{background:rgba(248,113,113,.1)}
+  .btn-sm{padding:5px 11px;font-size:12px;border-radius:7px}
+  .btn-icon{padding:5px 9px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:15px}
+  .btn-icon:hover{color:var(--text)}
+
+  .wrap{max-width:1180px;margin:0 auto;padding:18px 22px 60px}
+  .note{font-size:12px;color:var(--muted);line-height:1.6;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:16px}
+  .note b{color:var(--text)}
+
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+  .spacer{flex:1}
+
+  /* ---- 2x4 room of camera home cages ---- */
+  .hcmrowhdr{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin:6px 2px 8px;color:var(--text)}
+  .hcmrowhdr .dot{width:11px;height:11px;border-radius:3px;background:var(--lab)}
+  .hcmrowhdr .cnt{font-size:11px;color:var(--muted);font-weight:500}
+  .ebsrack{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:16px 16px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;margin-bottom:20px}
+  @media(max-width:820px){.ebsrack{grid-template-columns:repeat(2,1fr)}}
+  .ebscage{display:flex;flex-direction:column;align-items:center;cursor:pointer;--lab:var(--accent)}
+  .ebscam{display:flex;align-items:center;justify-content:center;gap:5px;padding:5px 10px;font-size:11px;font-weight:700;color:#fff;background:linear-gradient(#4c4c4c,#232323);border-radius:6px;box-shadow:0 3px 7px rgba(0,0,0,.32);position:relative;z-index:2;margin-bottom:-3px}
+  .ebscam::after{content:'';position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);width:8px;height:5px;background:#2b2b2b}
+  .ebscam .lens{width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#9db4ff,#0b1a4a);box-shadow:0 0 4px rgba(150,175,255,.9)}
+  .ebscam .camlbl{background:#fff;color:#1a1a1a;border-radius:3px;padding:0 6px;letter-spacing:.5px}
+  .ebscam .camct{opacity:.85;font-weight:500}
+  .ebsbox{width:100%;min-height:210px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden;border:1px solid var(--border2);border-top:2px solid var(--lab);border-radius:5px 5px 9px 9px;
+    background:linear-gradient(165deg, rgba(150,190,220,.14), rgba(150,190,220,.04) 58%, rgba(200,180,150,.16) 100%);
+    box-shadow:inset -9px 0 18px rgba(0,0,0,.14), inset 7px 0 12px rgba(255,255,255,.10), inset 0 9px 14px rgba(255,255,255,.08), 0 12px 22px rgba(0,0,0,.22)}
+  .ebsbox::before{content:'';position:absolute;inset:0 0 auto 0;height:44%;background:linear-gradient(180deg, rgba(255,255,255,.14), transparent);pointer-events:none}
+  .ebsbox::after{content:'';position:absolute;left:0;right:0;bottom:0;height:13px;background:linear-gradient(180deg, rgba(200,180,150,.20), rgba(200,180,150,.40));pointer-events:none}
+  .ebscage:hover .ebsbox{border-color:var(--accent)}
+  .ebslist{position:relative;z-index:1;flex:0 0 auto;width:100%;display:flex;flex-direction:column;gap:2px;padding:8px 8px 2px;max-height:120px;overflow:auto}
+  .occrow{font-size:11px;color:#0d1b2a;background:rgba(255,255,255,.72);border-radius:4px;padding:2px 6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+  .ebsmice{position:relative;z-index:1;width:100%;display:flex;flex-wrap:wrap;justify-content:center;align-items:flex-end;gap:1px 3px;padding:2px 6px 13px}
+  .mouseicon{display:inline-flex;width:31px;height:23px;color:#181818;filter:drop-shadow(0 0 1px rgba(255,255,255,.85))}
+  .mouseicon svg{width:100%;height:100%;transition:transform .12s}
+  .mouseicon.flip svg{transform:scaleX(-1)}
+  .ebsempty{color:#5b6b7d;font-size:12px;text-align:center;margin:auto;padding:26px 4px}
+  .ebsempty .ebssub{font-size:10px;opacity:.8}
+  .cagefoot{font-size:10.5px;color:var(--muted);margin-top:6px;text-align:center;display:flex;gap:6px;align-items:center;justify-content:center}
+  .excbadge{color:var(--orange);font-weight:700}
+
+  /* ---- tables ---- */
+  .sect{margin-top:28px}
+  .sect h2{font-size:14px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+  .sect .hint{font-size:11.5px;color:var(--muted);margin-bottom:10px}
+  table{width:100%;border-collapse:collapse;font-size:12.5px}
+  th{text-align:left;padding:8px 10px;color:var(--muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;border-bottom:2px solid var(--border);white-space:nowrap}
+  td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
+  tr:hover td{background:var(--bg2)}
+  .pill{display:inline-block;padding:1px 8px;border-radius:20px;font-size:10.5px;font-weight:700;color:#04121f}
+  .chip{display:inline-block;padding:1px 7px;border-radius:5px;font-size:10.5px;font-weight:700}
+  .tdim{color:var(--muted)}
+  .empty{color:var(--muted);font-size:12.5px;padding:14px 4px}
+
+  /* ---- modals ---- */
+  .ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:60;display:none;align-items:flex-start;justify-content:center;padding:36px 16px;overflow-y:auto}
+  .ov.open{display:flex}
+  .card{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;width:100%;max-width:560px;padding:22px;position:relative}
+  .card h3{font-size:16px;margin-bottom:3px;display:flex;align-items:center;gap:8px}
+  .card .csub{font-size:12px;color:var(--muted);margin-bottom:16px}
+  .x{position:absolute;top:13px;right:14px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer}
+  .x:hover{color:var(--text)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  .fg{display:flex;flex-direction:column;gap:4px}
+  .fg.full{grid-column:1/-1}
+  .fg label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+  .fg input,.fg select,.fg textarea{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-size:13px;font-family:inherit;outline:none}
+  .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--accent)}
+  .acts{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+  .occitem{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:9px;margin-bottom:7px;background:var(--bg3)}
+  .occitem .oi{width:26px;height:20px;color:var(--text);flex:0 0 auto}
+  .occitem .ottl{font-weight:700;font-size:13px}
+  .occitem .osub{font-size:11px;color:var(--muted)}
+  .occitem.gone{opacity:.55}
+  .divh{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:14px 0 8px}
+  .menu{position:absolute;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:6px;z-index:70;box-shadow:0 10px 30px rgba(0,0,0,.4);display:none}
+  .menu.open{display:block}
+  .menu button{display:block;width:100%;text-align:left;background:none;border:none;color:var(--text);font-size:13px;padding:8px 12px;border-radius:7px;cursor:pointer;font-family:inherit}
+  .menu button:hover{background:var(--bg3)}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🎥 HCM Metadata <span class="sub">· EBS Room 58 · home-cage occupancy &amp; disturbance log</span></h1>
+  <div class="hactions">
+    <span class="sync-status saving" id="syncStatus">Loading…</span>
+    <button class="btn-icon" onclick="openSettings()" title="Your name / settings">⚙</button>
+  </div>
+</header>
+
+<div class="wrap">
+  <div class="note">
+    Each cage is a camera home cage. Log <b>who's inside</b> and <b>disturbances</b> (food change, noise, light, handling…).
+    Every disturbance marks a window of recording to <b>exclude from analysis</b> (default 1&nbsp;hour after the event, editable).
+    <b>Export → Exclusion windows</b> gives your analysis pipeline the exact intervals to drop. All timestamps are San&nbsp;Diego (PT) wall-clock.
+  </div>
+
+  <div class="toolbar">
+    <button class="btn btn-primary btn-sm" onclick="openEvent(0)">＋ Log disturbance</button>
+    <button class="btn btn-sec btn-sm" onclick="openCage(null)">＋ Add mouse</button>
+    <div class="spacer"></div>
+    <div style="position:relative">
+      <button class="btn btn-sec btn-sm" onclick="toggleExport(event)">⤓ Export ▾</button>
+      <div class="menu" id="exportMenu">
+        <button onclick="exportExclusions()">Exclusion windows (CSV)</button>
+        <button onclick="exportOccupancy()">Occupancy log (CSV)</button>
+        <button onclick="exportEvents()">Disturbance events (CSV)</button>
+        <button onclick="exportJSON()">Everything (JSON)</button>
+      </div>
+    </div>
+    <button class="btn btn-sec btn-sm" onclick="refresh()" title="Reload from cloud">↻</button>
+  </div>
+
+  <div id="room"></div>
+
+  <div class="sect">
+    <h2>⚠ Disturbance events <span class="tdim" id="evtCount" style="font-weight:400;font-size:12px"></span></h2>
+    <div class="hint">Each event excludes a recording window from analysis. Whole-room events (noise, light) apply to all 8 cages.</div>
+    <div id="eventLog"></div>
+  </div>
+
+  <div class="sect">
+    <h2>🐭 Occupancy log</h2>
+    <div class="hint">When each mouse entered / left a cage. "Inside" = currently recording.</div>
+    <div id="occLog"></div>
+  </div>
+</div>
+
+<!-- Cage / add-mouse modal -->
+<div class="ov" id="cageModal">
+  <div class="card" style="max-width:600px">
+    <button class="x" onclick="closeModal('cageModal')">&times;</button>
+    <div id="cageBody"></div>
+  </div>
+</div>
+
+<!-- Event modal -->
+<div class="ov" id="eventModal">
+  <div class="card">
+    <button class="x" onclick="closeModal('eventModal')">&times;</button>
+    <h3>⚠ Log a disturbance</h3>
+    <div class="csub">Marks a window of recording to exclude from analysis.</div>
+    <div class="grid2">
+      <div class="fg full"><label>Type</label>
+        <select id="ev-type" onchange="onEvTypeChange()"></select>
+      </div>
+      <div class="fg full"><label>Applies to</label>
+        <select id="ev-scope"></select>
+      </div>
+      <div class="fg"><label>When (PT)</label><input type="datetime-local" id="ev-at"></div>
+      <div class="fg"><label>Exclude for (minutes after)</label><input type="number" id="ev-min" min="0" step="5" value="60"></div>
+      <div class="fg full"><label>Note (optional)</label><input id="ev-note" placeholder="e.g. loud cart in hallway"></div>
+    </div>
+    <div class="acts">
+      <button class="btn btn-sec" onclick="closeModal('eventModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveEvent()">Log event</button>
+    </div>
+  </div>
+</div>
+
+<!-- Settings modal -->
+<div class="ov" id="setModal">
+  <div class="card" style="max-width:400px">
+    <button class="x" onclick="closeModal('setModal')">&times;</button>
+    <h3>⚙ Settings</h3>
+    <div class="csub">Your name is saved with each change (edit history).</div>
+    <div class="fg full"><label>Your name</label><input id="set-name" placeholder="e.g. Leo"></div>
+    <div class="acts">
+      <button class="btn btn-sec" onclick="closeModal('setModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveSettings()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+// =====================================================================
+// SUPABASE — the live store (shares the Lee Lab colony project).
+// Publishable key is public by design; guarded by RLS.
+// =====================================================================
+const SUPA_URL = 'https://xgiqhkcpssakrlemvodx.supabase.co';
+const SUPA_KEY = 'sb_publishable_qbDIUER221OxvA_HvwhpCw_-V5OsMcD';
+const CACHE_KEY = 'hcm-meta-cache';
+const NAME_KEY  = 'hcm-meta-name';
+
+async function sb(path, opts){
+  opts = opts || {};
+  const res = await fetch(SUPA_URL + '/rest/v1/' + path, {
+    method: opts.method || 'GET',
+    headers: Object.assign({ apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY, 'Content-Type':'application/json' }, opts.headers || {}),
+    body: opts.body ? JSON.stringify(opts.body) : undefined,
+  });
+  if(!res.ok) throw new Error('Supabase ' + res.status + ': ' + (await res.text()));
+  const t = await res.text();
+  return t ? JSON.parse(t) : null;
+}
+
+// =====================================================================
+// CONFIG — the physical room. Edit here to relabel / re-map cages.
+// =====================================================================
+const CAGES = [
+  {id:1,cam:'Cam01',lab:'AD'}, {id:2,cam:'Cam02',lab:'AD'}, {id:3,cam:'Cam03',lab:'AD'}, {id:4,cam:'Cam04',lab:'AD'},
+  {id:5,cam:'Cam05',lab:'ALS'},{id:6,cam:'Cam06',lab:'ALS'},{id:7,cam:'Cam07',lab:'ALS'},{id:8,cam:'Cam08',lab:'ALS'},
+];
+const ROWS = [
+  {key:'AD',  title:'Kuo-Fen Lee Lab · AD',  cages:[1,2,3,4]},
+  {key:'ALS', title:'ALS',                    cages:[5,6,7,8]},
+];
+const LAB_COLOR = { AD:'#a78bfa', ALS:'#2dd4bf' };
+const cageById = id => CAGES.find(c => c.id === id);
+
+const EVENT_TYPES = [
+  {key:'food',        label:'Food change',          mins:60,  room:false},
+  {key:'water',       label:'Water change',         mins:60,  room:false},
+  {key:'cage_change', label:'Cage change / clean',  mins:120, room:false},
+  {key:'handling',    label:'Handling / weigh',     mins:60,  room:false},
+  {key:'noise',       label:'Noise',                mins:60,  room:true },
+  {key:'light',       label:'Light disturbance',    mins:60,  room:true },
+  {key:'person',      label:'Person entered room',  mins:60,  room:true },
+  {key:'other',       label:'Other',                mins:60,  room:false},
+];
+const evtType = k => EVENT_TYPES.find(t => t.key === k) || {key:k,label:k,mins:60,room:false};
+const EVT_COLOR = {food:'#fbbf24',water:'#38bdf8',cage_change:'#a78bfa',handling:'#f472b6',noise:'#f87171',light:'#fb923c',person:'#f87171',other:'#94a3b8'};
+
+// cute black mouse silhouettes — a few poses so a cage of N mice looks like N mice
+const MOUSE_SVGS = [
+`<svg viewBox="0 0 40 30"><path d="M9 22C2 22 3 13 8 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><ellipse cx="19" cy="19" rx="12" ry="7.5" fill="currentColor"/><circle cx="30" cy="16.5" r="5.6" fill="currentColor"/><circle cx="28.5" cy="9.5" r="3.6" fill="currentColor"/><circle cx="35.6" cy="17.5" r="1.1" fill="currentColor"/><circle cx="31.5" cy="15.2" r="0.9" fill="#fff"/></svg>`,
+`<svg viewBox="0 0 40 30"><path d="M8 20C3 24 3 16 9 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><ellipse cx="18" cy="20" rx="11" ry="7" fill="currentColor"/><circle cx="27" cy="12" r="5.2" fill="currentColor"/><circle cx="24" cy="6" r="3.3" fill="currentColor"/><circle cx="31.5" cy="10.5" r="1" fill="currentColor"/><circle cx="28.2" cy="11" r="0.85" fill="#fff"/></svg>`,
+`<svg viewBox="0 0 40 30"><path d="M20 26C30 26 33 18 27 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="18" r="9.5" fill="currentColor"/><circle cx="9" cy="13" r="4.4" fill="currentColor"/><circle cx="7.5" cy="8.5" r="3" fill="currentColor"/><circle cx="4.5" cy="13.5" r="1" fill="currentColor"/><circle cx="8" cy="12.2" r="0.85" fill="#fff"/></svg>`];
+const mouseIconEl = (o,i) => `<span class="mouseicon${(i||0)%2?' flip':''}" title="${esc(mouseLabel(o))}">${MOUSE_SVGS[(i||0)%MOUSE_SVGS.length]}</span>`;
+
+// =====================================================================
+// STATE
+// =====================================================================
+let OCC = {};   // id -> { id, cage, mouse_id, lab, genotype, sex, dob, entered_at, exited_at, note }
+let EVT = {};   // id -> { id, cage, type, at, exclude_min, note }
+let _saving = false, _dirty = false, _syncTimer = null, _syncedKeys = {};
+
+const cfgName = () => { try { return localStorage.getItem(NAME_KEY) || ''; } catch { return ''; } };
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+
+// =====================================================================
+// TIME HELPERS — everything is San Diego (PT) wall-clock, "YYYY-MM-DDTHH:MM"
+// =====================================================================
+function nowInput(){
+  const p = new Intl.DateTimeFormat('en-CA',{timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date());
+  const g = t => p.find(x => x.type === t).value;
+  let hh = g('hour'); if(hh === '24') hh = '00';
+  return `${g('year')}-${g('month')}-${g('day')}T${hh}:${g('minute')}`;
+}
+const pad = n => String(n).padStart(2,'0');
+function addMin(s, m){
+  if(!s) return s;
+  const [d,t] = s.split('T'); const [Y,Mo,D] = d.split('-').map(Number); const [H,Mi] = t.split(':').map(Number);
+  const x = new Date(Y, Mo-1, D, H, Mi + (+m||0));
+  return `${x.getFullYear()}-${pad(x.getMonth()+1)}-${pad(x.getDate())}T${pad(x.getHours())}:${pad(x.getMinutes())}`;
+}
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function fmtDT(s){ if(!s) return '—'; const [d,t] = s.split('T'); const [Y,Mo,D] = d.split('-').map(Number); return `${MON[Mo-1]} ${D}, ${t}`; }
+function ageMonths(dob){
+  if(!dob) return null; const [Y,Mo,D] = dob.split('-').map(Number); if(!Y) return null;
+  const n = new Date(); let m = (n.getFullYear()-Y)*12 + (n.getMonth()+1-Mo); if(n.getDate() < D) m--; return m < 0 ? null : m;
+}
+function esc(s){ const d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
+
+// =====================================================================
+// SYNC — diff-based per-row upserts (two people never clobber each other)
+// =====================================================================
+function collectRows(occ, evt){
+  occ = occ || OCC; evt = evt || EVT;
+  const keys = {}, rows = { occupants:[], events:[] };
+  Object.values(occ).forEach(o => {
+    const { id, cage, mouse_id, ...meta } = o;
+    keys['o:' + id] = JSON.stringify({ cage, mouse_id, ...meta });
+    rows.occupants.push({ id, cage, mouse_id, meta });
+  });
+  Object.values(evt).forEach(e => {
+    const { id, cage, ...meta } = e;
+    keys['e:' + id] = JSON.stringify({ cage, ...meta });
+    rows.events.push({ id, cage, meta });
+  });
+  return { keys, rows };
+}
+
+async function syncToSupabase(){
+  const { keys, rows } = collectRows();
+  const stamp = new Date().toISOString(), who = cfgName();
+  const chg = (arr, kf) => arr.filter(x => keys[kf(x)] !== _syncedKeys[kf(x)]);
+  const chOcc = chg(rows.occupants, o => 'o:' + o.id);
+  const chEvt = chg(rows.events,    e => 'e:' + e.id);
+  const dels = Object.keys(_syncedKeys).filter(k => !(k in keys));
+  if(!chOcc.length && !chEvt.length && !dels.length) return;
+  const up = (t, b) => sb(t, { method:'POST', headers:{ Prefer:'resolution=merge-duplicates,return=minimal' }, body:b });
+  if(chOcc.length) await up('hcm_occupants', chOcc.map(o => Object.assign({}, o, { updated_at:stamp, updated_by:who })));
+  if(chEvt.length) await up('hcm_events',    chEvt.map(e => Object.assign({}, e, { updated_at:stamp, updated_by:who })));
+  for(const k of dels) await deleteRowByKey(k);
+  _syncedKeys = keys;
+}
+
+async function deleteRowByKey(k){
+  const kind = k.slice(0,1), id = k.slice(2);
+  try {
+    if(kind === 'o') await sb(`hcm_occupants?id=eq.${encodeURIComponent(id)}`, { method:'DELETE', headers:{ Prefer:'return=minimal' } });
+    else if(kind === 'e') await sb(`hcm_events?id=eq.${encodeURIComponent(id)}`, { method:'DELETE', headers:{ Prefer:'return=minimal' } });
+  } catch(e){ console.error('delete failed', k, e); }
+}
+
+function setSyncStatus(state, text){ const el = document.getElementById('syncStatus'); el.className = 'sync-status ' + state; el.textContent = text || state; }
+
+function saveLocal(){
+  localStorage.setItem(CACHE_KEY, JSON.stringify({ OCC, EVT }));
+  _dirty = true; setSyncStatus('saving','Saving…');
+  clearTimeout(_syncTimer); _syncTimer = setTimeout(runSync, 1200);
+  renderAll();
+}
+async function runSync(){
+  if(_saving){ clearTimeout(_syncTimer); _syncTimer = setTimeout(runSync, 800); return; }
+  _saving = true;
+  try {
+    await syncToSupabase();
+    _dirty = false; setSyncStatus('saved','Saved');
+    setTimeout(() => { if(!_dirty) setSyncStatus('saved','Synced'); }, 1400);
+  } catch(e){
+    console.error('Sync failed:', e); setSyncStatus('error','Offline — retrying');
+    clearTimeout(_syncTimer); _syncTimer = setTimeout(runSync, 4000);
+  } finally { _saving = false; }
+}
+document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'hidden' && _dirty && !_saving) runSync(); });
+
+async function loadFromSupabase(){
+  const [occ, evt] = await Promise.all([ sb('hcm_occupants?select=*'), sb('hcm_events?select=*') ]);
+  if(occ == null && evt == null) return null;
+  const O = {}, E = {};
+  (occ || []).forEach(r => { O[r.id] = Object.assign({ id:r.id, cage:r.cage, mouse_id:r.mouse_id }, r.meta || {}); });
+  (evt || []).forEach(r => { E[r.id] = Object.assign({ id:r.id, cage:r.cage }, r.meta || {}); });
+  return { OCC:O, EVT:E };
+}
+// Fold any local-only rows (unsynced edits) into the server copy — never delete, only add.
+function reconcile(server, local){
+  if(!local) return server;
+  ['OCC','EVT'].forEach(kind => {
+    const s = server[kind], l = local[kind] || {};
+    Object.keys(l).forEach(id => { if(!(id in s)) s[id] = l[id]; });
+  });
+  return server;
+}
+
+async function init(){
+  setSyncStatus('saving','Loading…');
+  let loaded = false;
+  const local = (() => { try { return JSON.parse(localStorage.getItem(CACHE_KEY)); } catch { return null; } })();
+  try {
+    const server = await loadFromSupabase();
+    if(server){
+      const serverKeys = collectRows(server.OCC, server.EVT).keys;
+      reconcile(server, local);
+      OCC = server.OCC; EVT = server.EVT; _syncedKeys = serverKeys;
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ OCC, EVT }));
+      loaded = true;
+      const recovered = Object.keys(collectRows().keys).length - Object.keys(serverKeys).length;
+      if(recovered > 0){ setSyncStatus('saving', `Recovering ${recovered} unsynced edit(s)…`); runSync(); }
+      else setSyncStatus('saved','Synced');
+    }
+  } catch(e){ console.error('Supabase load failed:', e); }
+  if(!loaded){
+    if(local && (local.OCC || local.EVT)){ OCC = local.OCC || {}; EVT = local.EVT || {}; _syncedKeys = {}; loaded = true; setSyncStatus('error','Offline (cached) — will sync when back'); runSync(); }
+    else { OCC = {}; EVT = {}; setSyncStatus('error','No data — check connection'); }
+  }
+  renderAll();
+}
+
+// =====================================================================
+// DERIVED
+// =====================================================================
+const occInCage = n => Object.values(OCC).filter(o => o.cage === n && !o.exited_at).sort((a,b) => (a.entered_at||'') < (b.entered_at||'') ? -1 : 1);
+function mouseLabel(o){
+  const b = []; if(o.mouse_id) b.push(o.mouse_id); if(o.sex) b.push(o.sex);
+  if(o.genotype) b.push(o.genotype); const a = ageMonths(o.dob); if(a != null) b.push(a + 'mo');
+  return b.join(' · ') || '(mouse)';
+}
+const genoColor = g => { if(!g) return '#94a3b8'; let h = 0; for(let i=0;i<g.length;i++) h = (h*31 + g.charCodeAt(i)) % 360; return `hsl(${h},55%,60%)`; };
+// events that affect a given cage (its own + whole-room)
+const eventsForCage = n => Object.values(EVT).filter(e => e.cage === 0 || e.cage === n);
+
+// =====================================================================
+// RENDER — the room
+// =====================================================================
+function renderAll(){ renderRoom(); renderEventLog(); renderOccLog(); }
+
+function cageHtml(c){
+  const occ = occInCage(c.id);
+  const list = occ.length ? `<div class="ebslist">${occ.map(o => `<div class="occrow" title="${esc(mouseLabel(o))}">${esc(mouseLabel(o))}</div>`).join('')}</div>` : '';
+  const mice = occ.length ? `<div class="ebsmice">${occ.map((o,i) => mouseIconEl(o,i)).join('')}</div>`
+                          : `<div class="ebsempty">empty<br><span class="ebssub">click to add a mouse</span></div>`;
+  const nEv = eventsForCage(c.id).length;
+  return `<div class="ebscage" style="--lab:${LAB_COLOR[c.lab]||'#4f9cf9'}" onclick="openCage(${c.id})">
+    <div class="ebscam"><span class="lens"></span><span class="camlbl">${c.cam}</span><span class="camct">· ${occ.length}</span></div>
+    <div class="ebsbox">${list}${mice}</div>
+    <div class="cagefoot">${c.cam} · ${c.lab}${nEv ? ` · <span class="excbadge">⚠${nEv}</span>` : ''}</div>
+  </div>`;
+}
+function roomCount(r){ return r.cages.reduce((s,id) => s + occInCage(id).length, 0); }
+function renderRoom(){
+  document.getElementById('room').innerHTML = ROWS.map(r => `
+    <div class="hcmrowhdr" style="--lab:${LAB_COLOR[r.key]}"><span class="dot"></span>${esc(r.title)} <span class="cnt">· ${roomCount(r)} mice inside</span></div>
+    <div class="ebsrack">${r.cages.map(id => cageHtml(cageById(id))).join('')}</div>
+  `).join('');
+}
+
+function renderEventLog(){
+  const evts = Object.values(EVT).sort((a,b) => (a.at||'') < (b.at||'') ? 1 : -1);
+  document.getElementById('evtCount').textContent = evts.length ? `· ${evts.length}` : '';
+  const host = document.getElementById('eventLog');
+  if(!evts.length){ host.innerHTML = '<div class="empty">No disturbances logged yet. Click “＋ Log disturbance” whenever something happens that should be excluded from analysis.</div>'; return; }
+  host.innerHTML = `<table><thead><tr>
+    <th>When (PT)</th><th>Type</th><th>Applies to</th><th>Excluded window</th><th>Note</th><th></th></tr></thead><tbody>
+    ${evts.map(e => {
+      const t = evtType(e.type); const scope = e.cage === 0 ? 'Whole room' : (cageById(e.cage)?.cam + ' · ' + cageById(e.cage)?.lab);
+      const end = addMin(e.at, e.exclude_min);
+      return `<tr>
+        <td>${fmtDT(e.at)}</td>
+        <td><span class="chip" style="background:${EVT_COLOR[e.type]||'#94a3b8'}22;color:${EVT_COLOR[e.type]||'#94a3b8'}">${esc(t.label)}</span></td>
+        <td>${esc(scope)}</td>
+        <td class="tdim">${fmtDT(e.at)} → ${fmtDT(end)} <span style="opacity:.7">(${e.exclude_min}m)</span></td>
+        <td class="tdim">${esc(e.note||'')}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="deleteEvent('${e.id}')">Delete</button></td>
+      </tr>`;
+    }).join('')}
+  </tbody></table>`;
+}
+
+function renderOccLog(){
+  const occ = Object.values(OCC).sort((a,b) => (a.entered_at||'') < (b.entered_at||'') ? 1 : -1);
+  const host = document.getElementById('occLog');
+  if(!occ.length){ host.innerHTML = '<div class="empty">No mice logged yet. Click a cage (or “＋ Add mouse”) to record a mouse entering.</div>'; return; }
+  host.innerHTML = `<table><thead><tr>
+    <th>Cage</th><th>Mouse</th><th>Sex</th><th>Genotype</th><th>Entered</th><th>Status</th><th></th></tr></thead><tbody>
+    ${occ.map(o => {
+      const c = cageById(o.cage);
+      return `<tr>
+        <td>${c ? c.cam + ' · ' + c.lab : o.cage}</td>
+        <td style="font-weight:700">${esc(o.mouse_id||'—')}</td>
+        <td>${esc(o.sex||'')}</td>
+        <td>${o.genotype ? `<span class="chip" style="background:${genoColor(o.genotype)}22;color:${genoColor(o.genotype)}">${esc(o.genotype)}</span>` : ''}</td>
+        <td class="tdim">${fmtDT(o.entered_at)}</td>
+        <td>${o.exited_at ? `<span class="tdim">left ${fmtDT(o.exited_at)}</span>` : '<span class="chip" style="background:#34d39922;color:#34d399">inside</span>'}</td>
+        <td>${o.exited_at ? '' : `<button class="btn btn-sec btn-sm" onclick="exitOcc('${o.id}')">Mark out</button> `}<button class="btn btn-danger btn-sm" onclick="deleteOcc('${o.id}')">Delete</button></td>
+      </tr>`;
+    }).join('')}
+  </tbody></table>`;
+}
+
+// =====================================================================
+// CAGE MODAL — occupants + add mouse
+// =====================================================================
+let _cageCtx = null;
+window.openCage = function(n){
+  _cageCtx = n;
+  const body = document.getElementById('cageBody');
+  const cageOpts = CAGES.map(c => `<option value="${c.id}"${c.id===n?' selected':''}>${c.cam} · ${c.lab}</option>`).join('');
+  const c = n ? cageById(n) : null;
+  const occ = n ? occInCage(n) : [];
+  const gone = n ? Object.values(OCC).filter(o => o.cage === n && o.exited_at).sort((a,b)=>(a.exited_at<b.exited_at?1:-1)) : [];
+  body.innerHTML = `
+    <h3>${c ? `${c.cam} · ${c.lab}` : 'Add a mouse'}</h3>
+    <div class="csub">${c ? 'Mice currently in this cage, and add a new one.' : 'Record a mouse entering a cage.'}</div>
+    ${c && occ.length ? `<div class="divh">Inside now (${occ.length})</div>` + occ.map(occItemHtml).join('') : ''}
+    ${c && gone.length ? `<div class="divh">Previously (${gone.length})</div>` + gone.map(occItemHtml).join('') : ''}
+    ${c && !occ.length && !gone.length ? '<div class="empty" style="padding:6px 2px">No mice recorded in this cage yet.</div>' : ''}
+    <div class="divh">＋ Add a mouse</div>
+    <div class="grid2">
+      <div class="fg"><label>Cage</label><select id="oc-cage">${cageOpts}</select></div>
+      <div class="fg"><label>Mouse ID / ear-tag</label><input id="oc-id" placeholder="e.g. 1234 or M1"></div>
+      <div class="fg"><label>Sex</label><select id="oc-sex"><option value="">—</option><option>M</option><option>F</option></select></div>
+      <div class="fg"><label>Genotype</label><input id="oc-geno" placeholder="e.g. AD, WT, SOD1"></div>
+      <div class="fg"><label>DOB (optional)</label><input type="date" id="oc-dob"></div>
+      <div class="fg"><label>Entered (PT)</label><input type="datetime-local" id="oc-at" value="${nowInput()}"></div>
+      <div class="fg full"><label>Note (optional)</label><input id="oc-note"></div>
+    </div>
+    <div class="acts">
+      <button class="btn btn-sec" onclick="closeModal('cageModal')">Close</button>
+      ${c ? `<button class="btn btn-sec" onclick="closeModal('cageModal');openEvent(${n})">⚠ Log disturbance</button>` : ''}
+      <button class="btn btn-primary" onclick="addOcc()">Add mouse</button>
+    </div>`;
+  document.getElementById('cageModal').classList.add('open');
+};
+function occItemHtml(o){
+  return `<div class="occitem${o.exited_at?' gone':''}">
+    <span class="oi">${MOUSE_SVGS[0]}</span>
+    <div style="flex:1">
+      <div class="ottl">${esc(o.mouse_id||'(mouse)')}</div>
+      <div class="osub">${esc([o.sex,o.genotype,ageMonths(o.dob)!=null?ageMonths(o.dob)+'mo':''].filter(Boolean).join(' · '))} · in ${fmtDT(o.entered_at)}${o.exited_at?` · out ${fmtDT(o.exited_at)}`:''}</div>
+    </div>
+    ${o.exited_at ? '' : `<button class="btn btn-sec btn-sm" onclick="exitOcc('${o.id}')">Mark out</button>`}
+    <button class="btn btn-danger btn-sm" onclick="deleteOcc('${o.id}')">✕</button>
+  </div>`;
+}
+window.addOcc = function(){
+  const cage = +document.getElementById('oc-cage').value;
+  const mouse_id = document.getElementById('oc-id').value.trim();
+  const at = document.getElementById('oc-at').value || nowInput();
+  if(!mouse_id && !confirm('No mouse ID entered — add anyway?')) return;
+  const o = {
+    id: uid(), cage, mouse_id,
+    sex: document.getElementById('oc-sex').value,
+    genotype: document.getElementById('oc-geno').value.trim(),
+    dob: document.getElementById('oc-dob').value,
+    entered_at: at, exited_at: null,
+    note: document.getElementById('oc-note').value.trim(),
+  };
+  OCC[o.id] = o; saveLocal();
+  openCage(cage); // refresh the panel on the cage we just added to
+};
+window.exitOcc = function(id){
+  const o = OCC[id]; if(!o) return;
+  const t = prompt('Mark ' + (o.mouse_id||'mouse') + ' as leaving at (PT, YYYY-MM-DDTHH:MM):', nowInput());
+  if(t == null) return;
+  o.exited_at = t.trim() || nowInput(); saveLocal();
+  if(document.getElementById('cageModal').classList.contains('open') && _cageCtx) openCage(_cageCtx);
+};
+window.deleteOcc = function(id){
+  const o = OCC[id]; if(!o) return;
+  if(!confirm('Delete this occupancy record for ' + (o.mouse_id||'mouse') + '? (removes it from the log entirely)')) return;
+  delete OCC[id]; saveLocal();
+  if(document.getElementById('cageModal').classList.contains('open') && _cageCtx != null) openCage(_cageCtx);
+};
+
+// =====================================================================
+// EVENT MODAL
+// =====================================================================
+window.openEvent = function(cage){
+  const typeSel = document.getElementById('ev-type');
+  typeSel.innerHTML = EVENT_TYPES.map(t => `<option value="${t.key}">${t.label}</option>`).join('');
+  const scopeSel = document.getElementById('ev-scope');
+  scopeSel.innerHTML = `<option value="0">Whole room (all 8 cages)</option>` + CAGES.map(c => `<option value="${c.id}">${c.cam} · ${c.lab}</option>`).join('');
+  scopeSel.value = String(cage || 0);
+  document.getElementById('ev-at').value = nowInput();
+  onEvTypeChange();
+  document.getElementById('eventModal').classList.add('open');
+};
+window.onEvTypeChange = function(){
+  const t = evtType(document.getElementById('ev-type').value);
+  document.getElementById('ev-min').value = t.mins;
+  // whole-room event types default the scope to "whole room" (0)
+  if(t.room) document.getElementById('ev-scope').value = '0';
+};
+window.saveEvent = function(){
+  const e = {
+    id: uid(),
+    cage: +document.getElementById('ev-scope').value,
+    type: document.getElementById('ev-type').value,
+    at: document.getElementById('ev-at').value || nowInput(),
+    exclude_min: Math.max(0, +document.getElementById('ev-min').value || 0),
+    note: document.getElementById('ev-note').value.trim(),
+  };
+  EVT[e.id] = e; saveLocal();
+  closeModal('eventModal');
+};
+window.deleteEvent = function(id){
+  if(!confirm('Delete this disturbance event? (its exclusion window is removed)')) return;
+  delete EVT[id]; saveLocal();
+};
+
+// =====================================================================
+// SETTINGS / MISC
+// =====================================================================
+window.openSettings = function(){ document.getElementById('set-name').value = cfgName(); document.getElementById('setModal').classList.add('open'); };
+window.saveSettings = function(){ localStorage.setItem(NAME_KEY, document.getElementById('set-name').value.trim()); closeModal('setModal'); };
+window.closeModal = function(id){ document.getElementById(id).classList.remove('open'); };
+window.refresh = async function(){ try { await reloadFromCloud(); } catch(e){ console.error(e); } };
+async function reloadFromCloud(){
+  setSyncStatus('saving','Reloading…');
+  const server = await loadFromSupabase();
+  if(server){ OCC = server.OCC; EVT = server.EVT; _syncedKeys = collectRows().keys; localStorage.setItem(CACHE_KEY, JSON.stringify({OCC,EVT})); setSyncStatus('saved','Synced'); renderAll(); }
+  else setSyncStatus('error','No data');
+}
+
+// =====================================================================
+// EXPORT
+// =====================================================================
+window.toggleExport = function(ev){ ev.stopPropagation(); document.getElementById('exportMenu').classList.toggle('open'); };
+document.addEventListener('click', () => document.getElementById('exportMenu').classList.remove('open'));
+
+function csvCell(v){ v = v == null ? '' : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g,'""') + '"' : v; }
+function download(name, text, mime){
+  const blob = new Blob([text], { type: mime || 'text/plain' });
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+const stamp = () => nowInput().slice(0,10);
+
+// The headline export: one row per (event × affected cage) = intervals to drop from analysis.
+function exclusionRows(){
+  const out = [];
+  Object.values(EVT).forEach(e => {
+    const cages = e.cage === 0 ? CAGES.map(c => c.id) : [e.cage];
+    cages.forEach(cid => { const c = cageById(cid); if(!c) return;
+      out.push({ cage:c.cam, lab:c.lab, exclude_start:e.at, exclude_end:addMin(e.at, e.exclude_min), event:evtType(e.type).label, minutes:e.exclude_min, note:e.note||'' });
+    });
+  });
+  return out.sort((a,b) => a.cage < b.cage ? -1 : a.cage > b.cage ? 1 : (a.exclude_start < b.exclude_start ? -1 : 1));
+}
+window.exportExclusions = function(){
+  const rows = exclusionRows();
+  const head = ['cage','lab','exclude_start','exclude_end','event','minutes','note'];
+  const csv = [head.join(',')].concat(rows.map(r => head.map(h => csvCell(r[h])).join(','))).join('\n');
+  download(`hcm_exclusions_${stamp()}.csv`, csv, 'text/csv');
+};
+window.exportOccupancy = function(){
+  const head = ['cage','lab','mouse_id','sex','genotype','dob','entered_at','exited_at','status','note'];
+  const rows = Object.values(OCC).map(o => { const c = cageById(o.cage); return {
+    cage:c?c.cam:o.cage, lab:c?c.lab:'', mouse_id:o.mouse_id, sex:o.sex, genotype:o.genotype, dob:o.dob,
+    entered_at:o.entered_at, exited_at:o.exited_at||'', status:o.exited_at?'out':'inside', note:o.note||'' }; });
+  const csv = [head.join(',')].concat(rows.map(r => head.map(h => csvCell(r[h])).join(','))).join('\n');
+  download(`hcm_occupancy_${stamp()}.csv`, csv, 'text/csv');
+};
+window.exportEvents = function(){
+  const head = ['when','scope','type','exclude_minutes','note'];
+  const rows = Object.values(EVT).sort((a,b)=>(a.at<b.at?-1:1)).map(e => ({
+    when:e.at, scope:e.cage===0?'whole_room':(cageById(e.cage)?.cam||e.cage), type:evtType(e.type).label, exclude_minutes:e.exclude_min, note:e.note||'' }));
+  const csv = [head.join(',')].concat(rows.map(r => head.map(h => csvCell(r[h])).join(','))).join('\n');
+  download(`hcm_events_${stamp()}.csv`, csv, 'text/csv');
+};
+window.exportJSON = function(){
+  download(`hcm_metadata_${stamp()}.json`, JSON.stringify({ room:'EBS 58', cages:CAGES, occupants:Object.values(OCC), events:Object.values(EVT) }, null, 2), 'application/json');
+};
+
+// close modals on Escape / backdrop
+document.addEventListener('keydown', e => { if(e.key === 'Escape') document.querySelectorAll('.ov.open').forEach(o => o.classList.remove('open')); });
+document.querySelectorAll('.ov').forEach(ov => ov.addEventListener('click', e => { if(e.target === ov) ov.classList.remove('open'); }));
+
+init();
+})();
+</script>
+</body>
+</html>
