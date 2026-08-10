@@ -164,7 +164,7 @@
   <!-- AD tab -->
   <div class="tabpanel" id="tab-AD">
     <div class="labbar" style="--lab:#a78bfa">
-      <span class="labtitle">Kuo-Fen Lee Lab · AD <span class="tdim" style="font-weight:400;font-size:12px">· Cam01–04</span></span>
+      <span class="labtitle">Kuo-Fen Lee Lab · AD <span class="tdim" style="font-weight:400;font-size:12px">· physical Cam 1–4</span></span>
       <div class="spacer"></div>
       <div style="position:relative">
         <button class="btn btn-sec btn-sm" onclick="toggleLabExport('AD',event)">⤓ Export AD ▾</button>
@@ -183,7 +183,7 @@
   <!-- ALS tab -->
   <div class="tabpanel" id="tab-ALS" style="display:none">
     <div class="labbar" style="--lab:#2dd4bf">
-      <span class="labtitle">Eiman Lab · ALS <span class="tdim" style="font-weight:400;font-size:12px">· Cam05–08</span></span>
+      <span class="labtitle">Eiman Lab · ALS <span class="tdim" style="font-weight:400;font-size:12px">· physical Cam 5–8</span></span>
       <div class="spacer"></div>
       <div style="position:relative">
         <button class="btn btn-sec btn-sm" onclick="toggleLabExport('ALS',event)">⤓ Export ALS ▾</button>
@@ -291,9 +291,10 @@ const LABS = {
   AD:  { key:'AD',  title:'Kuo-Fen Lee Lab · AD', owner:'Kuo-Fen Lee', cages:[1,2,3,4], color:'#a78bfa' },
   ALS: { key:'ALS', title:'Eiman Lab · ALS',       owner:'Eiman',       cages:[5,6,7,8], color:'#2dd4bf' },
 };
+// cam = PHYSICAL camera position (not the disk folder cam_0N, which is wired differently).
 const CAGES = [
-  {id:1,cam:'Cam01',lab:'AD'}, {id:2,cam:'Cam02',lab:'AD'}, {id:3,cam:'Cam03',lab:'AD'}, {id:4,cam:'Cam04',lab:'AD'},
-  {id:5,cam:'Cam05',lab:'ALS'},{id:6,cam:'Cam06',lab:'ALS'},{id:7,cam:'Cam07',lab:'ALS'},{id:8,cam:'Cam08',lab:'ALS'},
+  {id:1,cam:'Cam 1',lab:'AD'}, {id:2,cam:'Cam 2',lab:'AD'}, {id:3,cam:'Cam 3',lab:'AD'}, {id:4,cam:'Cam 4',lab:'AD'},
+  {id:5,cam:'Cam 5',lab:'ALS'},{id:6,cam:'Cam 6',lab:'ALS'},{id:7,cam:'Cam 7',lab:'ALS'},{id:8,cam:'Cam 8',lab:'ALS'},
 ];
 const cageById = id => CAGES.find(c => c.id === id);
 const ROOM = 0, TYE_CAGE = 99;
