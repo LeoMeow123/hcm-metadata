@@ -1,5 +1,7 @@
 # HCM Metadata — EBS Room 58
 
+**Live:** https://leomeow123.github.io/hcm-metadata/
+
 A small shared web app for logging **home-cage-monitoring metadata**: which mice are in
 which camera cage, and disturbances (food change, noise, light, handling…) that mark
 windows of recording to **exclude from analysis**.
