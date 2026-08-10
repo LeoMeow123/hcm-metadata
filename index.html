@@ -662,8 +662,9 @@ window.deleteEvent = function(id){
 // =====================================================================
 // COHORT HISTORY — room-level batch timeline (for segmenting analysis)
 // =====================================================================
+const cohKey = s => String(s||'').replace(/^\D+/, '');   // ignore a leading "~" so approximate dates still sort chronologically
 function renderCohorts(){
-  const list = Object.values(COH).sort((a,b) => (a.start||'') < (b.start||'') ? -1 : 1);
+  const list = Object.values(COH).sort((a,b) => cohKey(a.start) < cohKey(b.start) ? -1 : 1);
   const host = document.getElementById('cohLog');
   if(!host) return;
   if(!list.length){ host.innerHTML = '<div class="empty">No cohort periods yet. Click “＋ Cohort period” to add the batch history.</div>'; return; }
@@ -782,7 +783,7 @@ window.exportEvents = function(){
 };
 window.exportCohorts = function(){
   const head = ['batch','start','end','genotypes','mice_per_cage','in_manifest','note'];
-  const rows = Object.values(COH).sort((a,b) => (a.start||'') < (b.start||'') ? -1 : 1);
+  const rows = Object.values(COH).sort((a,b) => cohKey(a.start) < cohKey(b.start) ? -1 : 1);
   const csv = [head.join(',')].concat(rows.map(r => head.map(h => csvCell(r[h])).join(','))).join('\n');
   download(`hcm_cohorts_${stamp()}.csv`, csv, 'text/csv');
 };
