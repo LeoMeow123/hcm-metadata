@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,8 +7,13 @@
 <style>
   :root{
     --bg:#0e1116; --bg2:#161b22; --bg3:#1c232d; --border:#232b36; --border2:#2f3a48;
-    --text:#e6edf3; --muted:#8b98a8; --accent:#4f9cf9; --green:#34d399; --yellow:#fbbf24;
+    --text:#e6edf3; --muted:#8b98a8; --accent:#4f9cf9; --accent-fg:#04121f; --green:#34d399; --yellow:#fbbf24;
     --red:#f87171; --orange:#fb923c; --pink:#db2777; --purple:#a78bfa; --teal:#2dd4bf;
+  }
+  /* Day view (light) */
+  :root[data-theme="light"]{
+    --bg:#eef1f7; --bg2:#ffffff; --bg3:#f1f4f9; --border:#dde3ec; --border2:#c7cfdc;
+    --text:#182030; --muted:#5c6675; --accent:#2563eb; --accent-fg:#ffffff;
   }
   *{margin:0;padding:0;box-sizing:border-box}
   body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
@@ -25,7 +30,7 @@
   .sync-status.error{color:var(--red);background:rgba(248,113,113,.12)}
 
   .btn{padding:8px 15px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;transition:.15s;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
-  .btn-primary{background:var(--accent);color:#04121f}
+  .btn-primary{background:var(--accent);color:var(--accent-fg)}
   .btn-primary:hover{filter:brightness(1.08)}
   .btn-sec{background:var(--bg3);color:var(--text);border:1px solid var(--border2)}
   .btn-sec:hover{background:#232c38}
@@ -36,6 +41,10 @@
   .btn-icon:hover{color:var(--text)}
 
   .wrap{max-width:1180px;margin:0 auto;padding:18px 22px 60px}
+  .tabs{display:flex;gap:2px;margin-bottom:18px;border-bottom:1px solid var(--border)}
+  .tab{padding:9px 16px;font-size:13.5px;font-weight:600;color:var(--muted);cursor:pointer;background:none;border:none;border-bottom:2px solid transparent;font-family:inherit;margin-bottom:-1px}
+  .tab:hover{color:var(--text)}
+  .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
   .note{font-size:12px;color:var(--muted);line-height:1.6;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:16px}
   .note b{color:var(--text)}
 
@@ -117,11 +126,18 @@
   <h1>🎥 HCM Metadata <span class="sub">· EBS Room 58 · home-cage occupancy &amp; disturbance log</span></h1>
   <div class="hactions">
     <span class="sync-status saving" id="syncStatus">Loading…</span>
+    <button class="btn-icon" id="themeBtn" onclick="toggleTheme()" title="Day / night view">🌙</button>
     <button class="btn-icon" onclick="openSettings()" title="Your name / settings">⚙</button>
   </div>
 </header>
 
 <div class="wrap">
+  <div class="tabs">
+    <button class="tab active" data-tab="room" onclick="switchTab('room')">🎥 Room</button>
+    <button class="tab" data-tab="cohorts" onclick="switchTab('cohorts')">🗓 Cohort history</button>
+  </div>
+
+  <div class="tabpanel" id="tab-room">
   <div class="note">
     Each cage is a camera home cage. Log <b>who's inside</b> and <b>disturbances</b> (food change, noise, light, handling…).
     Every disturbance marks a window of recording to <b>exclude from analysis</b> (default 1&nbsp;hour after the event, editable).
@@ -158,12 +174,15 @@
     <div class="hint">When each mouse entered / left a cage. "Inside" = currently recording.</div>
     <div id="occLog"></div>
   </div>
+  </div><!-- /tab-room -->
 
+  <div class="tabpanel" id="tab-cohorts" style="display:none">
   <div class="sect">
     <h2>🗓 Cohort history <button class="btn btn-sec btn-sm" style="margin-left:8px;font-weight:600" onclick="openCohort(null)">＋ Cohort period</button></h2>
     <div class="hint">Which batch/cohort occupied the cages over time — essential for segmenting analysis by cohort &amp; genotype.</div>
     <div id="cohLog"></div>
   </div>
+  </div><!-- /tab-cohorts -->
 </div>
 
 <!-- Cage / add-mouse modal -->
@@ -692,6 +711,18 @@ window.deleteCohort = function(id){ if(!confirm('Delete this cohort period?')) r
 // =====================================================================
 // SETTINGS / MISC
 // =====================================================================
+window.switchTab = function(t){
+  document.querySelectorAll('.tabpanel').forEach(p => p.style.display = 'none');
+  const el = document.getElementById('tab-' + t); if(el) el.style.display = 'block';
+  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === t));
+};
+function applyTheme(t){
+  document.documentElement.dataset.theme = t;
+  try { localStorage.setItem('hcm-theme', t); } catch(e){}
+  const b = document.getElementById('themeBtn'); if(b) b.textContent = t === 'light' ? '🌙' : '☀️';
+}
+window.toggleTheme = function(){ applyTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'); };
+
 window.openSettings = function(){ document.getElementById('set-name').value = cfgName(); document.getElementById('setModal').classList.add('open'); };
 window.saveSettings = function(){ localStorage.setItem(NAME_KEY, document.getElementById('set-name').value.trim()); closeModal('setModal'); };
 window.closeModal = function(id){ document.getElementById(id).classList.remove('open'); };
@@ -763,6 +794,7 @@ window.exportJSON = function(){
 document.addEventListener('keydown', e => { if(e.key === 'Escape') document.querySelectorAll('.ov.open').forEach(o => o.classList.remove('open')); });
 document.querySelectorAll('.ov').forEach(ov => ov.addEventListener('click', e => { if(e.target === ov) ov.classList.remove('open'); }));
 
+applyTheme((() => { try { return localStorage.getItem('hcm-theme') || 'light'; } catch(e){ return 'light'; } })());
 init();
 })();
 </script>
