@@ -10,7 +10,6 @@
     --text:#e6edf3; --muted:#8b98a8; --accent:#4f9cf9; --accent-fg:#04121f; --green:#34d399; --yellow:#fbbf24;
     --red:#f87171; --orange:#fb923c; --pink:#db2777; --purple:#a78bfa; --teal:#2dd4bf;
   }
-  /* Day view (light) */
   :root[data-theme="light"]{
     --bg:#eef1f7; --bg2:#ffffff; --bg3:#f1f4f9; --border:#dde3ec; --border2:#c7cfdc;
     --text:#182030; --muted:#5c6675; --accent:#2563eb; --accent-fg:#ffffff;
@@ -23,7 +22,6 @@
   header h1{font-size:18px;font-weight:700;display:flex;align-items:center;gap:9px}
   header .sub{font-size:12px;color:var(--muted);font-weight:400}
   .hactions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-
   .sync-status{font-size:11px;padding:4px 10px;border-radius:12px;font-weight:600}
   .sync-status.saved{color:var(--green);background:rgba(52,211,153,.12)}
   .sync-status.saving{color:var(--yellow);background:rgba(251,191,36,.12)}
@@ -33,7 +31,7 @@
   .btn-primary{background:var(--accent);color:var(--accent-fg)}
   .btn-primary:hover{filter:brightness(1.08)}
   .btn-sec{background:var(--bg3);color:var(--text);border:1px solid var(--border2)}
-  .btn-sec:hover{background:#232c38}
+  .btn-sec:hover{background:var(--bg2)}
   .btn-danger{background:transparent;color:var(--red);border:1px solid var(--border2)}
   .btn-danger:hover{background:rgba(248,113,113,.1)}
   .btn-sm{padding:5px 11px;font-size:12px;border-radius:7px}
@@ -41,21 +39,22 @@
   .btn-icon:hover{color:var(--text)}
 
   .wrap{max-width:1180px;margin:0 auto;padding:18px 22px 60px}
+  .note{font-size:12px;color:var(--muted);line-height:1.6;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:9px 13px;margin-bottom:14px}
+  .note b{color:var(--text)}
+  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+  .spacer{flex:1}
+
   .tabs{display:flex;gap:2px;margin-bottom:18px;border-bottom:1px solid var(--border)}
   .tab{padding:9px 16px;font-size:13.5px;font-weight:600;color:var(--muted);cursor:pointer;background:none;border:none;border-bottom:2px solid transparent;font-family:inherit;margin-bottom:-1px}
   .tab:hover{color:var(--text)}
   .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-  .note{font-size:12px;color:var(--muted);line-height:1.6;background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:10px 14px;margin-bottom:16px}
-  .note b{color:var(--text)}
 
-  .toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
-  .spacer{flex:1}
+  .labbar{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+  .labtitle{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px}
+  .labtitle::before{content:'';width:12px;height:12px;border-radius:3px;background:var(--lab)}
 
-  /* ---- 2x4 room of camera home cages ---- */
-  .hcmrowhdr{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin:6px 2px 8px;color:var(--text)}
-  .hcmrowhdr .dot{width:11px;height:11px;border-radius:3px;background:var(--lab)}
-  .hcmrowhdr .cnt{font-size:11px;color:var(--muted);font-weight:500}
-  .ebsrack{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:16px 16px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;margin-bottom:20px}
+  /* camera home cages */
+  .ebsrack{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;padding:16px 16px 20px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;margin-bottom:18px}
   @media(max-width:820px){.ebsrack{grid-template-columns:repeat(2,1fr)}}
   .ebscage{display:flex;flex-direction:column;align-items:center;cursor:pointer;--lab:var(--accent)}
   .ebscam{display:flex;align-items:center;justify-content:center;gap:5px;padding:5px 10px;font-size:11px;font-weight:700;color:#fff;background:linear-gradient(#4c4c4c,#232323);border-radius:6px;box-shadow:0 3px 7px rgba(0,0,0,.32);position:relative;z-index:2;margin-bottom:-3px}
@@ -77,26 +76,36 @@
   .mouseicon.flip svg{transform:scaleX(-1)}
   .ebsempty{color:#5b6b7d;font-size:12px;text-align:center;margin:auto;padding:26px 4px}
   .ebsempty .ebssub{font-size:10px;opacity:.8}
-  .cagefoot{font-size:10.5px;color:var(--muted);margin-top:6px;text-align:center;display:flex;gap:6px;align-items:center;justify-content:center}
+  .cagefoot{font-size:10.5px;color:var(--muted);margin-top:6px;text-align:center}
   .excbadge{color:var(--orange);font-weight:700}
 
-  /* ---- tables ---- */
-  .sect{margin-top:28px}
+  .sect{margin-top:22px}
   .sect h2{font-size:14px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
   .sect .hint{font-size:11.5px;color:var(--muted);margin-bottom:10px}
   table{width:100%;border-collapse:collapse;font-size:12.5px}
   th{text-align:left;padding:8px 10px;color:var(--muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;border-bottom:2px solid var(--border);white-space:nowrap}
   td{padding:7px 10px;border-bottom:1px solid var(--border);vertical-align:middle}
   tr:hover td{background:var(--bg2)}
-  .pill{display:inline-block;padding:1px 8px;border-radius:20px;font-size:10.5px;font-weight:700;color:#04121f}
   .chip{display:inline-block;padding:1px 7px;border-radius:5px;font-size:10.5px;font-weight:700}
   .tdim{color:var(--muted)}
   .empty{color:var(--muted);font-size:12.5px;padding:14px 4px}
 
-  /* ---- modals ---- */
-  .ov{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:60;display:none;align-items:flex-start;justify-content:center;padding:36px 16px;overflow-y:auto}
+  /* cohort swimlane timeline */
+  .tl{margin:4px 0 4px}
+  .tlrow{display:flex;align-items:center;height:26px;margin-bottom:4px}
+  .tllbl{width:52px;font-size:11px;font-weight:700;color:var(--muted);flex:0 0 auto}
+  .tltrack{position:relative;flex:1;height:22px;background:var(--bg3);border-radius:5px;overflow:hidden;border:1px solid var(--border)}
+  .tlseg{position:absolute;top:0;bottom:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#04121f;overflow:hidden;white-space:nowrap;border-right:1px solid rgba(0,0,0,.22)}
+  .tlaxis{position:relative;height:15px;margin-left:52px;margin-top:2px}
+  .tltick{position:absolute;font-size:10px;color:var(--muted);transform:translateX(-50%);white-space:nowrap;top:3px}
+  .tltick::before{content:'';position:absolute;top:-3px;left:50%;width:1px;height:4px;background:var(--border2)}
+  .tllegend{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0 14px 52px;font-size:11px;color:var(--muted)}
+  .tllegend .sw{display:inline-block;width:11px;height:11px;border-radius:3px;vertical-align:-1px;margin-right:4px}
+
+  /* modals */
+  .ov{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:60;display:none;align-items:flex-start;justify-content:center;padding:36px 16px;overflow-y:auto}
   .ov.open{display:flex}
-  .card{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;width:100%;max-width:560px;padding:22px;position:relative}
+  .card{background:var(--bg2);border:1px solid var(--border2);border-radius:14px;width:100%;max-width:580px;padding:22px;position:relative}
   .card h3{font-size:16px;margin-bottom:3px;display:flex;align-items:center;gap:8px}
   .card .csub{font-size:12px;color:var(--muted);margin-bottom:16px}
   .x{position:absolute;top:13px;right:14px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer}
@@ -106,7 +115,7 @@
   .fg.full{grid-column:1/-1}
   .fg label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
   .fg input,.fg select,.fg textarea{background:var(--bg3);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;color:var(--text);font-size:13px;font-family:inherit;outline:none}
-  .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--accent)}
+  .fg input:focus,.fg select:focus{border-color:var(--accent)}
   .acts{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
   .occitem{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);border-radius:9px;margin-bottom:7px;background:var(--bg3)}
   .occitem .oi{width:26px;height:20px;color:var(--text);flex:0 0 auto}
@@ -114,7 +123,7 @@
   .occitem .osub{font-size:11px;color:var(--muted)}
   .occitem.gone{opacity:.55}
   .divh{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin:14px 0 8px}
-  .menu{position:absolute;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:6px;z-index:70;box-shadow:0 10px 30px rgba(0,0,0,.4);display:none}
+  .menu{position:absolute;right:0;background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:6px;z-index:70;box-shadow:0 10px 30px rgba(0,0,0,.4);display:none;min-width:180px}
   .menu.open{display:block}
   .menu button{display:block;width:100%;text-align:left;background:none;border:none;color:var(--text);font-size:13px;padding:8px 12px;border-radius:7px;cursor:pointer;font-family:inherit}
   .menu button:hover{background:var(--bg3)}
@@ -123,7 +132,7 @@
 <body>
 
 <header>
-  <h1>🎥 HCM Metadata <span class="sub">· EBS Room 58 · home-cage occupancy &amp; disturbance log</span></h1>
+  <h1>🎥 HCM Metadata <span class="sub">· EBS Room 58</span></h1>
   <div class="hactions">
     <span class="sync-status saving" id="syncStatus">Loading…</span>
     <button class="btn-icon" id="themeBtn" onclick="toggleTheme()" title="Day / night view">🌙</button>
@@ -132,125 +141,128 @@
 </header>
 
 <div class="wrap">
-  <div class="tabs">
-    <button class="tab active" data-tab="room" onclick="switchTab('room')">🎥 Room</button>
-    <button class="tab" data-tab="cohorts" onclick="switchTab('cohorts')">🗓 Cohort history</button>
-  </div>
-
-  <div class="tabpanel" id="tab-room">
   <div class="note">
-    Each cage is a camera home cage. Log <b>who's inside</b> and <b>disturbances</b> (food change, noise, light, handling…).
-    Every disturbance marks a window of recording to <b>exclude from analysis</b> (default 1&nbsp;hour after the event, editable).
-    <b>Export → Exclusion windows</b> gives your analysis pipeline the exact intervals to drop. All timestamps are San&nbsp;Diego (PT) wall-clock.
+    Log <b>who's in each cage</b> and <b>events</b> (food change, noise, handling…). Disturbances mark a window
+    to <b>exclude from analysis</b> (editable). Each lab's data lives on its own tab and exports separately.
+    Timestamps are San&nbsp;Diego (PT) wall-clock.
   </div>
 
   <div class="toolbar">
-    <button class="btn btn-primary btn-sm" onclick="openEvent(0)">＋ Log disturbance</button>
+    <button class="btn btn-primary btn-sm" onclick="openEvent(0)">＋ Entry an event</button>
     <button class="btn btn-sec btn-sm" onclick="openCage(null)">＋ Add mouse</button>
     <div class="spacer"></div>
-    <div style="position:relative">
-      <button class="btn btn-sec btn-sm" onclick="toggleExport(event)">⤓ Export ▾</button>
-      <div class="menu" id="exportMenu">
-        <button onclick="exportExclusions()">Exclusion windows (CSV)</button>
-        <button onclick="exportOccupancy()">Occupancy log (CSV)</button>
-        <button onclick="exportEvents()">Disturbance events (CSV)</button>
-        <button onclick="exportCohorts()">Cohort history (CSV)</button>
-        <button onclick="exportJSON()">Everything (JSON)</button>
-      </div>
-    </div>
+    <button class="btn btn-sec btn-sm" onclick="exportAllJSON()">⤓ All (JSON)</button>
     <button class="btn btn-sec btn-sm" onclick="refresh()" title="Reload from cloud">↻</button>
   </div>
 
-  <div id="room"></div>
-
-  <div class="sect">
-    <h2>⚠ Disturbance events <span class="tdim" id="evtCount" style="font-weight:400;font-size:12px"></span></h2>
-    <div class="hint">Each event excludes a recording window from analysis. Whole-room events (noise, light) apply to all 8 cages.</div>
-    <div id="eventLog"></div>
+  <div class="tabs">
+    <button class="tab active" data-tab="AD" onclick="switchTab('AD')">🧠 AD · Kuo-Fen</button>
+    <button class="tab" data-tab="ALS" onclick="switchTab('ALS')">🧬 ALS · Eiman</button>
+    <button class="tab" data-tab="cohorts" onclick="switchTab('cohorts')">🗓 Cohort history</button>
   </div>
 
-  <div class="sect">
-    <h2>🐭 Occupancy log</h2>
-    <div class="hint">When each mouse entered / left a cage. "Inside" = currently recording.</div>
-    <div id="occLog"></div>
+  <!-- AD tab -->
+  <div class="tabpanel" id="tab-AD">
+    <div class="labbar" style="--lab:#a78bfa">
+      <span class="labtitle">Kuo-Fen Lee Lab · AD <span class="tdim" style="font-weight:400;font-size:12px">· Cam01–04</span></span>
+      <div class="spacer"></div>
+      <div style="position:relative">
+        <button class="btn btn-sec btn-sm" onclick="toggleLabExport('AD',event)">⤓ Export AD ▾</button>
+        <div class="menu" id="expMenu-AD">
+          <button onclick="labExport('AD','exclusion windows')">Exclusion windows (CSV)</button>
+          <button onclick="labExport('AD','events')">Events (CSV)</button>
+          <button onclick="labExport('AD','occupancy')">Occupancy (CSV)</button>
+        </div>
+      </div>
+    </div>
+    <div id="room-AD"></div>
+    <div class="sect"><h2>⚠ Events</h2><div class="hint">Disturbances affecting these cages or the whole room.</div><div id="evt-AD"></div></div>
+    <div class="sect"><h2>🐭 Occupancy</h2><div id="occ-AD"></div></div>
   </div>
-  </div><!-- /tab-room -->
 
+  <!-- ALS tab -->
+  <div class="tabpanel" id="tab-ALS" style="display:none">
+    <div class="labbar" style="--lab:#2dd4bf">
+      <span class="labtitle">Eiman Lab · ALS <span class="tdim" style="font-weight:400;font-size:12px">· Cam05–08</span></span>
+      <div class="spacer"></div>
+      <div style="position:relative">
+        <button class="btn btn-sec btn-sm" onclick="toggleLabExport('ALS',event)">⤓ Export ALS ▾</button>
+        <div class="menu" id="expMenu-ALS">
+          <button onclick="labExport('ALS','exclusion windows')">Exclusion windows (CSV)</button>
+          <button onclick="labExport('ALS','events')">Events (CSV)</button>
+          <button onclick="labExport('ALS','occupancy')">Occupancy (CSV)</button>
+        </div>
+      </div>
+    </div>
+    <div id="room-ALS"></div>
+    <div class="sect"><h2>⚠ Events</h2><div class="hint">Disturbances affecting these cages or the whole room.</div><div id="evt-ALS"></div></div>
+    <div class="sect"><h2>🐭 Occupancy</h2><div id="occ-ALS"></div></div>
+  </div>
+
+  <!-- Cohort tab -->
   <div class="tabpanel" id="tab-cohorts" style="display:none">
-  <div class="sect">
-    <h2>🗓 Cohort history <button class="btn btn-sec btn-sm" style="margin-left:8px;font-weight:600" onclick="openCohort(null)">＋ Cohort period</button></h2>
-    <div class="hint">Which batch/cohort occupied the cages over time — essential for segmenting analysis by cohort &amp; genotype.</div>
-    <div id="cohLog"></div>
+    <div class="sect">
+      <h2>🗓 Cohort history <button class="btn btn-sec btn-sm" style="margin-left:8px;font-weight:600" onclick="openCohort(null)">＋ Cohort period</button>
+        <button class="btn btn-sec btn-sm" style="font-weight:600" onclick="exportCohorts()">⤓ CSV</button></h2>
+      <div class="hint">Which genotype occupied each cage over time (per-cage swimlane), then the batch table below.</div>
+      <div id="cohTimeline"></div>
+      <div id="cohLog"></div>
+    </div>
   </div>
-  </div><!-- /tab-cohorts -->
 </div>
 
 <!-- Cage / add-mouse modal -->
-<div class="ov" id="cageModal">
-  <div class="card" style="max-width:600px">
-    <button class="x" onclick="closeModal('cageModal')">&times;</button>
-    <div id="cageBody"></div>
-  </div>
-</div>
+<div class="ov" id="cageModal"><div class="card" style="max-width:600px"><button class="x" onclick="closeModal('cageModal')">&times;</button><div id="cageBody"></div></div></div>
 
 <!-- Event modal -->
 <div class="ov" id="eventModal">
   <div class="card">
     <button class="x" onclick="closeModal('eventModal')">&times;</button>
-    <h3>⚠ Log a disturbance</h3>
-    <div class="csub">Marks a window of recording to exclude from analysis.</div>
+    <h3>＋ Entry an event</h3>
+    <div class="csub">Log an action or disturbance. Disturbances mark a window to exclude from analysis.</div>
     <div class="grid2">
-      <div class="fg full"><label>Type</label>
-        <select id="ev-type" onchange="onEvTypeChange()"></select>
-      </div>
-      <div class="fg full"><label>Applies to</label>
-        <select id="ev-scope"></select>
-      </div>
+      <div class="fg"><label>Lab</label><select id="ev-lab"></select></div>
+      <div class="fg"><label>Your name</label><input id="ev-by" placeholder="who is logging this"></div>
+      <div class="fg"><label>Action / type</label><select id="ev-type" onchange="onActionChange()"></select></div>
+      <div class="fg"><label>Affected cage</label><select id="ev-scope"></select></div>
       <div class="fg"><label>When (PT)</label><input type="datetime-local" id="ev-at"></div>
-      <div class="fg"><label>Exclude for (minutes after)</label><input type="number" id="ev-min" min="0" step="5" value="60"></div>
-      <div class="fg full"><label>Note (optional)</label><input id="ev-note" placeholder="e.g. loud cart in hallway"></div>
+      <div class="fg"><label>Exclude for (min after)</label><input type="number" id="ev-min" min="0" step="5" value="60"></div>
+      <div class="fg full"><label>Note (optional)</label><input id="ev-note" placeholder="details"></div>
     </div>
     <div class="acts">
       <button class="btn btn-sec" onclick="closeModal('eventModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveEvent()">Log event</button>
+      <button class="btn btn-primary" onclick="saveEvent()">Save event</button>
     </div>
   </div>
 </div>
 
-<!-- Cohort period modal -->
+<!-- Cohort modal -->
 <div class="ov" id="cohModal">
   <div class="card">
     <button class="x" onclick="closeModal('cohModal')">&times;</button>
     <h3 id="coh-title">Cohort period</h3>
-    <div class="csub">A batch/cohort that occupied the cages over a date range — for segmenting analysis by cohort.</div>
+    <div class="csub">A batch/cohort that occupied the cages over a date range.</div>
     <input type="hidden" id="coh-id">
     <div class="grid2">
       <div class="fg full"><label>Batch / name</label><input id="coh-batch" placeholder="e.g. Tau/WT/PD full-cohort"></div>
       <div class="fg"><label>Start (date)</label><input id="coh-start" placeholder="2026-05-14"></div>
-      <div class="fg"><label>End (date or 'present')</label><input id="coh-end" placeholder="2026-07-21"></div>
-      <div class="fg full"><label>Genotypes</label><input id="coh-geno" placeholder="e.g. Tau, WT, PD"></div>
-      <div class="fg"><label>Mice per cage</label><input id="coh-mpc" placeholder="e.g. 2  or  ♀×3 / ♂×2"></div>
+      <div class="fg"><label>End (date or 'present')</label><input id="coh-end" placeholder="2026-07-30"></div>
+      <div class="fg full"><label>Genotypes (display)</label><input id="coh-geno" placeholder="e.g. Cam1 Tau | Cam2 WT | ..."></div>
+      <div class="fg full"><label>Per-cage genotype for timeline (Cam:geno, e.g. 1:Tau, 2:WT, 3:PD, 4:WT-s)</label><input id="coh-cages" placeholder="1:Tau, 2:WT, 3:PD, 4:WT-s"></div>
+      <div class="fg"><label>Mice per cage</label><input id="coh-mpc" placeholder="e.g. 2"></div>
       <div class="fg"><label>In manifest</label><input id="coh-man" placeholder="e.g. 12,499 chunks"></div>
-      <div class="fg full"><label>Note</label><input id="coh-note" placeholder="e.g. ~2 mo"></div>
+      <div class="fg full"><label>Note</label><input id="coh-note"></div>
     </div>
-    <div class="acts">
-      <button class="btn btn-sec" onclick="closeModal('cohModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveCohort()">Save</button>
-    </div>
+    <div class="acts"><button class="btn btn-sec" onclick="closeModal('cohModal')">Cancel</button><button class="btn btn-primary" onclick="saveCohort()">Save</button></div>
   </div>
 </div>
 
 <!-- Settings modal -->
 <div class="ov" id="setModal">
-  <div class="card" style="max-width:400px">
-    <button class="x" onclick="closeModal('setModal')">&times;</button>
-    <h3>⚙ Settings</h3>
-    <div class="csub">Your name is saved with each change (edit history).</div>
+  <div class="card" style="max-width:400px"><button class="x" onclick="closeModal('setModal')">&times;</button>
+    <h3>⚙ Settings</h3><div class="csub">Your name pre-fills the event form and is saved with each change.</div>
     <div class="fg full"><label>Your name</label><input id="set-name" placeholder="e.g. Leo"></div>
-    <div class="acts">
-      <button class="btn btn-sec" onclick="closeModal('setModal')">Cancel</button>
-      <button class="btn btn-primary" onclick="saveSettings()">Save</button>
-    </div>
+    <div class="acts"><button class="btn btn-sec" onclick="closeModal('setModal')">Cancel</button><button class="btn btn-primary" onclick="saveSettings()">Save</button></div>
   </div>
 </div>
 
@@ -258,419 +270,234 @@
 (function(){
 "use strict";
 
-// =====================================================================
-// SUPABASE — the live store (shares the Lee Lab colony project).
-// Publishable key is public by design; guarded by RLS.
-// =====================================================================
+// ===== SUPABASE (shares the Lee Lab colony project; publishable key is public, guarded by RLS) =====
 const SUPA_URL = 'https://xgiqhkcpssakrlemvodx.supabase.co';
 const SUPA_KEY = 'sb_publishable_qbDIUER221OxvA_HvwhpCw_-V5OsMcD';
 const CACHE_KEY = 'hcm-meta-cache';
 const NAME_KEY  = 'hcm-meta-name';
-
 async function sb(path, opts){
   opts = opts || {};
   const res = await fetch(SUPA_URL + '/rest/v1/' + path, {
     method: opts.method || 'GET',
-    headers: Object.assign({ apikey: SUPA_KEY, Authorization: 'Bearer ' + SUPA_KEY, 'Content-Type':'application/json' }, opts.headers || {}),
+    headers: Object.assign({ apikey:SUPA_KEY, Authorization:'Bearer '+SUPA_KEY, 'Content-Type':'application/json' }, opts.headers || {}),
     body: opts.body ? JSON.stringify(opts.body) : undefined,
   });
   if(!res.ok) throw new Error('Supabase ' + res.status + ': ' + (await res.text()));
-  const t = await res.text();
-  return t ? JSON.parse(t) : null;
+  const t = await res.text(); return t ? JSON.parse(t) : null;
 }
 
-// =====================================================================
-// CONFIG — the physical room. Edit here to relabel / re-map cages.
-// =====================================================================
+// ===== CONFIG =====
+const LABS = {
+  AD:  { key:'AD',  title:'Kuo-Fen Lee Lab · AD', owner:'Kuo-Fen Lee', cages:[1,2,3,4], color:'#a78bfa' },
+  ALS: { key:'ALS', title:'Eiman Lab · ALS',       owner:'Eiman',       cages:[5,6,7,8], color:'#2dd4bf' },
+};
 const CAGES = [
   {id:1,cam:'Cam01',lab:'AD'}, {id:2,cam:'Cam02',lab:'AD'}, {id:3,cam:'Cam03',lab:'AD'}, {id:4,cam:'Cam04',lab:'AD'},
   {id:5,cam:'Cam05',lab:'ALS'},{id:6,cam:'Cam06',lab:'ALS'},{id:7,cam:'Cam07',lab:'ALS'},{id:8,cam:'Cam08',lab:'ALS'},
 ];
-const ROWS = [
-  {key:'AD',  title:'Kuo-Fen Lee Lab · AD',  cages:[1,2,3,4]},
-  {key:'ALS', title:'ALS',                    cages:[5,6,7,8]},
-];
-const LAB_COLOR = { AD:'#a78bfa', ALS:'#2dd4bf' };
 const cageById = id => CAGES.find(c => c.id === id);
-
-const EVENT_TYPES = [
-  {key:'food',        label:'Food change',          mins:60,  room:false},
-  {key:'water',       label:'Water change',         mins:60,  room:false},
-  {key:'cage_change', label:'Cage change / clean',  mins:120, room:false},
-  {key:'handling',    label:'Handling / weigh',     mins:60,  room:false},
-  {key:'noise',       label:'Noise',                mins:60,  room:true },
-  {key:'light',       label:'Light disturbance',    mins:60,  room:true },
-  {key:'person',      label:'Person entered room',  mins:60,  room:true },
-  {key:'other',       label:'Other',                mins:60,  room:false},
+const ROOM = 0, TYE_CAGE = 99;
+const EVENT_LABS = ['Talmo lab','Eiman lab','Tye lab','Kuo-Fen lab'];
+const affectedLabel = c => c===ROOM ? 'Whole room' : c===TYE_CAGE ? 'Tye lab cages' : (cageById(c) ? cageById(c).cam+' · '+cageById(c).lab : 'Cage '+c);
+const ACTION_TYPES = [
+  {key:'food',label:'Food change',mins:60}, {key:'water',label:'Water change',mins:60},
+  {key:'cage_change',label:'Cage change / clean',mins:120}, {key:'handling',label:'Handling / weigh',mins:60},
+  {key:'noise',label:'Noise',mins:60}, {key:'light',label:'Light disturbance',mins:60},
+  {key:'person',label:'Person entered room',mins:60}, {key:'add_cohort',label:'Add cohort',mins:0},
+  {key:'remove_cohort',label:'Remove cohort',mins:0}, {key:'other',label:'Other',mins:60},
 ];
-const evtType = k => EVENT_TYPES.find(t => t.key === k) || {key:k,label:k,mins:60,room:false};
-const EVT_COLOR = {food:'#fbbf24',water:'#38bdf8',cage_change:'#a78bfa',handling:'#f472b6',noise:'#f87171',light:'#fb923c',person:'#f87171',other:'#94a3b8'};
+const actType = k => ACTION_TYPES.find(t => t.key === k) || {key:k,label:k,mins:60};
+const ACT_COLOR = {food:'#fbbf24',water:'#38bdf8',cage_change:'#a78bfa',handling:'#f472b6',noise:'#f87171',light:'#fb923c',person:'#f87171',add_cohort:'#34d399',remove_cohort:'#94a3b8',other:'#94a3b8'};
+const GENO_COLOR = {WT:'#22c55e','WT-s':'#65a30d','WT-sentinel':'#65a30d',APP:'#f59e0b',Tau:'#a855f7',PD:'#3b82f6'};
+function genoColor(g){ if(GENO_COLOR[g]) return GENO_COLOR[g]; let h=0; for(let i=0;i<(g||'').length;i++)h=(h*31+g.charCodeAt(i))%360; return `hsl(${h},55%,52%)`; }
 
-// cute black mouse silhouettes — a few poses so a cage of N mice looks like N mice
 const MOUSE_SVGS = [
 `<svg viewBox="0 0 40 30"><path d="M9 22C2 22 3 13 8 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><ellipse cx="19" cy="19" rx="12" ry="7.5" fill="currentColor"/><circle cx="30" cy="16.5" r="5.6" fill="currentColor"/><circle cx="28.5" cy="9.5" r="3.6" fill="currentColor"/><circle cx="35.6" cy="17.5" r="1.1" fill="currentColor"/><circle cx="31.5" cy="15.2" r="0.9" fill="#fff"/></svg>`,
 `<svg viewBox="0 0 40 30"><path d="M8 20C3 24 3 16 9 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><ellipse cx="18" cy="20" rx="11" ry="7" fill="currentColor"/><circle cx="27" cy="12" r="5.2" fill="currentColor"/><circle cx="24" cy="6" r="3.3" fill="currentColor"/><circle cx="31.5" cy="10.5" r="1" fill="currentColor"/><circle cx="28.2" cy="11" r="0.85" fill="#fff"/></svg>`,
 `<svg viewBox="0 0 40 30"><path d="M20 26C30 26 33 18 27 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="17" cy="18" r="9.5" fill="currentColor"/><circle cx="9" cy="13" r="4.4" fill="currentColor"/><circle cx="7.5" cy="8.5" r="3" fill="currentColor"/><circle cx="4.5" cy="13.5" r="1" fill="currentColor"/><circle cx="8" cy="12.2" r="0.85" fill="#fff"/></svg>`];
 const mouseIconEl = (o,i) => `<span class="mouseicon${(i||0)%2?' flip':''}" title="${esc(mouseLabel(o))}">${MOUSE_SVGS[(i||0)%MOUSE_SVGS.length]}</span>`;
 
-// =====================================================================
-// STATE
-// =====================================================================
-let OCC = {};   // id -> { id, cage, mouse_id, lab, genotype, sex, dob, entered_at, exited_at, note }
-let EVT = {};   // id -> { id, cage, type, at, exclude_min, note }
-let COH = {};   // id -> { id, batch, start, end, genotypes, mice_per_cage, in_manifest, note }  (room-level cohort/batch history)
+// ===== STATE =====
+let OCC = {}, EVT = {}, COH = {};
 let _saving = false, _dirty = false, _syncTimer = null, _syncedKeys = {};
-
 const cfgName = () => { try { return localStorage.getItem(NAME_KEY) || ''; } catch { return ''; } };
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
 
-// =====================================================================
-// TIME HELPERS — everything is San Diego (PT) wall-clock, "YYYY-MM-DDTHH:MM"
-// =====================================================================
+// ===== TIME (San Diego PT wall-clock "YYYY-MM-DDTHH:MM") =====
 function nowInput(){
   const p = new Intl.DateTimeFormat('en-CA',{timeZone:'America/Los_Angeles',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date());
-  const g = t => p.find(x => x.type === t).value;
-  let hh = g('hour'); if(hh === '24') hh = '00';
+  const g = t => p.find(x => x.type === t).value; let hh = g('hour'); if(hh === '24') hh = '00';
   return `${g('year')}-${g('month')}-${g('day')}T${hh}:${g('minute')}`;
 }
 const pad = n => String(n).padStart(2,'0');
-function addMin(s, m){
-  if(!s) return s;
-  const [d,t] = s.split('T'); const [Y,Mo,D] = d.split('-').map(Number); const [H,Mi] = t.split(':').map(Number);
-  const x = new Date(Y, Mo-1, D, H, Mi + (+m||0));
-  return `${x.getFullYear()}-${pad(x.getMonth()+1)}-${pad(x.getDate())}T${pad(x.getHours())}:${pad(x.getMinutes())}`;
-}
+function addMin(s, m){ if(!s) return s; const [d,t]=s.split('T'); const [Y,Mo,D]=d.split('-').map(Number); const [H,Mi]=t.split(':').map(Number); const x=new Date(Y,Mo-1,D,H,Mi+(+m||0)); return `${x.getFullYear()}-${pad(x.getMonth()+1)}-${pad(x.getDate())}T${pad(x.getHours())}:${pad(x.getMinutes())}`; }
 const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-function fmtDT(s){ if(!s) return '—'; const [d,t] = s.split('T'); const [Y,Mo,D] = d.split('-').map(Number); return `${MON[Mo-1]} ${D}, ${t}`; }
-function ageMonths(dob){
-  if(!dob) return null; const [Y,Mo,D] = dob.split('-').map(Number); if(!Y) return null;
-  const n = new Date(); let m = (n.getFullYear()-Y)*12 + (n.getMonth()+1-Mo); if(n.getDate() < D) m--; return m < 0 ? null : m;
-}
-function esc(s){ const d = document.createElement('div'); d.textContent = s == null ? '' : s; return d.innerHTML; }
+function fmtDT(s){ if(!s) return '—'; const [d,t]=s.split('T'); const [Y,Mo,D]=d.split('-').map(Number); return `${MON[Mo-1]} ${D}, ${t}`; }
+function ageMonths(dob){ if(!dob) return null; const [Y,Mo,D]=dob.split('-').map(Number); if(!Y) return null; const n=new Date(); let m=(n.getFullYear()-Y)*12+(n.getMonth()+1-Mo); if(n.getDate()<D) m--; return m<0?null:m; }
+function esc(s){ const d=document.createElement('div'); d.textContent = s==null?'':s; return d.innerHTML; }
+const cohKey = s => String(s||'').replace(/^\D+/, '');   // ignore a leading "~" so approximate dates sort chronologically
 
-// =====================================================================
-// SYNC — diff-based per-row upserts (two people never clobber each other)
-// =====================================================================
+// ===== SYNC (diff-based per-row upserts) =====
 function collectRows(occ, evt, coh){
-  occ = occ || OCC; evt = evt || EVT; coh = coh || COH;
-  const keys = {}, rows = { occupants:[], events:[], cohorts:[] };
-  Object.values(occ).forEach(o => {
-    const { id, cage, mouse_id, ...meta } = o;
-    keys['o:' + id] = JSON.stringify({ cage, mouse_id, ...meta });
-    rows.occupants.push({ id, cage, mouse_id, meta });
-  });
-  Object.values(evt).forEach(e => {
-    const { id, cage, ...meta } = e;
-    keys['e:' + id] = JSON.stringify({ cage, ...meta });
-    rows.events.push({ id, cage, meta });
-  });
-  Object.values(coh).forEach(c => {
-    const { id, ...meta } = c;
-    keys['h:' + id] = JSON.stringify(meta);
-    rows.cohorts.push({ id, meta });
-  });
-  return { keys, rows };
+  occ=occ||OCC; evt=evt||EVT; coh=coh||COH;
+  const keys={}, rows={occupants:[],events:[],cohorts:[]};
+  Object.values(occ).forEach(o => { const {id,cage,mouse_id,...meta}=o; keys['o:'+id]=JSON.stringify({cage,mouse_id,...meta}); rows.occupants.push({id,cage,mouse_id,meta}); });
+  Object.values(evt).forEach(e => { const {id,cage,...meta}=e; keys['e:'+id]=JSON.stringify({cage,...meta}); rows.events.push({id,cage,meta}); });
+  Object.values(coh).forEach(c => { const {id,...meta}=c; keys['h:'+id]=JSON.stringify(meta); rows.cohorts.push({id,meta}); });
+  return {keys,rows};
 }
-
 async function syncToSupabase(){
-  const { keys, rows } = collectRows();
-  const stamp = new Date().toISOString(), who = cfgName();
-  const chg = (arr, kf) => arr.filter(x => keys[kf(x)] !== _syncedKeys[kf(x)]);
-  const chOcc = chg(rows.occupants, o => 'o:' + o.id);
-  const chEvt = chg(rows.events,    e => 'e:' + e.id);
-  const chCoh = chg(rows.cohorts,   c => 'h:' + c.id);
-  const dels = Object.keys(_syncedKeys).filter(k => !(k in keys));
+  const {keys,rows}=collectRows(); const stamp=new Date().toISOString(), who=cfgName();
+  const chg=(arr,kf)=>arr.filter(x=>keys[kf(x)]!==_syncedKeys[kf(x)]);
+  const chOcc=chg(rows.occupants,o=>'o:'+o.id), chEvt=chg(rows.events,e=>'e:'+e.id), chCoh=chg(rows.cohorts,c=>'h:'+c.id);
+  const dels=Object.keys(_syncedKeys).filter(k=>!(k in keys));
   if(!chOcc.length && !chEvt.length && !chCoh.length && !dels.length) return;
-  const up = (t, b) => sb(t, { method:'POST', headers:{ Prefer:'resolution=merge-duplicates,return=minimal' }, body:b });
-  if(chOcc.length) await up('hcm_occupants', chOcc.map(o => Object.assign({}, o, { updated_at:stamp, updated_by:who })));
-  if(chEvt.length) await up('hcm_events',    chEvt.map(e => Object.assign({}, e, { updated_at:stamp, updated_by:who })));
-  if(chCoh.length) await up('hcm_cohorts',   chCoh.map(c => Object.assign({}, c, { updated_at:stamp, updated_by:who })));
+  const up=(t,b)=>sb(t,{method:'POST',headers:{Prefer:'resolution=merge-duplicates,return=minimal'},body:b});
+  if(chOcc.length) await up('hcm_occupants', chOcc.map(o=>Object.assign({},o,{updated_at:stamp,updated_by:who})));
+  if(chEvt.length) await up('hcm_events',    chEvt.map(e=>Object.assign({},e,{updated_at:stamp,updated_by:who})));
+  if(chCoh.length) await up('hcm_cohorts',   chCoh.map(c=>Object.assign({},c,{updated_at:stamp,updated_by:who})));
   for(const k of dels) await deleteRowByKey(k);
-  _syncedKeys = keys;
+  _syncedKeys=keys;
 }
-
 async function deleteRowByKey(k){
-  const kind = k.slice(0,1), id = k.slice(2);
+  const kind=k.slice(0,1), id=k.slice(2);
   try {
-    if(kind === 'o') await sb(`hcm_occupants?id=eq.${encodeURIComponent(id)}`, { method:'DELETE', headers:{ Prefer:'return=minimal' } });
-    else if(kind === 'e') await sb(`hcm_events?id=eq.${encodeURIComponent(id)}`, { method:'DELETE', headers:{ Prefer:'return=minimal' } });
-    else if(kind === 'h') await sb(`hcm_cohorts?id=eq.${encodeURIComponent(id)}`, { method:'DELETE', headers:{ Prefer:'return=minimal' } });
-  } catch(e){ console.error('delete failed', k, e); }
+    if(kind==='o') await sb(`hcm_occupants?id=eq.${encodeURIComponent(id)}`,{method:'DELETE',headers:{Prefer:'return=minimal'}});
+    else if(kind==='e') await sb(`hcm_events?id=eq.${encodeURIComponent(id)}`,{method:'DELETE',headers:{Prefer:'return=minimal'}});
+    else if(kind==='h') await sb(`hcm_cohorts?id=eq.${encodeURIComponent(id)}`,{method:'DELETE',headers:{Prefer:'return=minimal'}});
+  } catch(e){ console.error('delete failed',k,e); }
 }
-
-function setSyncStatus(state, text){ const el = document.getElementById('syncStatus'); el.className = 'sync-status ' + state; el.textContent = text || state; }
-
-function saveLocal(){
-  localStorage.setItem(CACHE_KEY, JSON.stringify({ OCC, EVT, COH }));
-  _dirty = true; setSyncStatus('saving','Saving…');
-  clearTimeout(_syncTimer); _syncTimer = setTimeout(runSync, 1200);
-  renderAll();
-}
+function setSyncStatus(state,text){ const el=document.getElementById('syncStatus'); el.className='sync-status '+state; el.textContent=text||state; }
+function saveLocal(){ localStorage.setItem(CACHE_KEY,JSON.stringify({OCC,EVT,COH})); _dirty=true; setSyncStatus('saving','Saving…'); clearTimeout(_syncTimer); _syncTimer=setTimeout(runSync,1200); renderAll(); }
 async function runSync(){
-  if(_saving){ clearTimeout(_syncTimer); _syncTimer = setTimeout(runSync, 800); return; }
-  _saving = true;
-  try {
-    await syncToSupabase();
-    _dirty = false; setSyncStatus('saved','Saved');
-    setTimeout(() => { if(!_dirty) setSyncStatus('saved','Synced'); }, 1400);
-  } catch(e){
-    console.error('Sync failed:', e); setSyncStatus('error','Offline — retrying');
-    clearTimeout(_syncTimer); _syncTimer = setTimeout(runSync, 4000);
-  } finally { _saving = false; }
+  if(_saving){ clearTimeout(_syncTimer); _syncTimer=setTimeout(runSync,800); return; }
+  _saving=true;
+  try { await syncToSupabase(); _dirty=false; setSyncStatus('saved','Saved'); setTimeout(()=>{ if(!_dirty) setSyncStatus('saved','Synced'); },1400); }
+  catch(e){ console.error('Sync failed:',e); setSyncStatus('error','Offline — retrying'); clearTimeout(_syncTimer); _syncTimer=setTimeout(runSync,4000); }
+  finally { _saving=false; }
 }
-document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'hidden' && _dirty && !_saving) runSync(); });
-
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden'&&_dirty&&!_saving) runSync(); });
 async function loadFromSupabase(){
-  const [occ, evt] = await Promise.all([ sb('hcm_occupants?select=*'), sb('hcm_events?select=*') ]);
-  if(occ == null && evt == null) return null;
-  // cohort table is optional — if the migration for it hasn't been run yet, don't break the whole app
-  let coh = [];
-  try { coh = await sb('hcm_cohorts?select=*') || []; } catch(e){ console.warn('hcm_cohorts not ready (run the migration to enable cohort history):', e.message); }
-  const O = {}, E = {}, C = {};
-  (occ || []).forEach(r => { O[r.id] = Object.assign({ id:r.id, cage:r.cage, mouse_id:r.mouse_id }, r.meta || {}); });
-  (evt || []).forEach(r => { E[r.id] = Object.assign({ id:r.id, cage:r.cage }, r.meta || {}); });
-  (coh || []).forEach(r => { C[r.id] = Object.assign({ id:r.id }, r.meta || {}); });
-  return { OCC:O, EVT:E, COH:C };
+  const [occ,evt]=await Promise.all([ sb('hcm_occupants?select=*'), sb('hcm_events?select=*') ]);
+  if(occ==null&&evt==null) return null;
+  let coh=[]; try { coh=await sb('hcm_cohorts?select=*')||[]; } catch(e){ console.warn('hcm_cohorts not ready:',e.message); }
+  const O={},E={},C={};
+  (occ||[]).forEach(r=>{ O[r.id]=Object.assign({id:r.id,cage:r.cage,mouse_id:r.mouse_id},r.meta||{}); });
+  (evt||[]).forEach(r=>{ E[r.id]=Object.assign({id:r.id,cage:r.cage},r.meta||{}); });
+  (coh||[]).forEach(r=>{ C[r.id]=Object.assign({id:r.id},r.meta||{}); });
+  return {OCC:O,EVT:E,COH:C};
 }
-// Fold any local-only rows (unsynced edits) into the server copy — never delete, only add.
-function reconcile(server, local){
-  if(!local) return server;
-  ['OCC','EVT','COH'].forEach(kind => {
-    if(!server[kind]) server[kind] = {};
-    const s = server[kind], l = local[kind] || {};
-    Object.keys(l).forEach(id => { if(!(id in s)) s[id] = l[id]; });
-  });
-  return server;
-}
-
+function reconcile(server,local){ if(!local) return server; ['OCC','EVT','COH'].forEach(kind=>{ if(!server[kind]) server[kind]={}; const s=server[kind],l=local[kind]||{}; Object.keys(l).forEach(id=>{ if(!(id in s)) s[id]=l[id]; }); }); return server; }
 async function init(){
-  setSyncStatus('saving','Loading…');
-  let loaded = false;
-  const local = (() => { try { return JSON.parse(localStorage.getItem(CACHE_KEY)); } catch { return null; } })();
+  setSyncStatus('saving','Loading…'); let loaded=false;
+  const local=(()=>{ try{ return JSON.parse(localStorage.getItem(CACHE_KEY)); }catch{ return null; } })();
   try {
-    const server = await loadFromSupabase();
+    const server=await loadFromSupabase();
     if(server){
-      const serverKeys = collectRows(server.OCC, server.EVT, server.COH).keys;
-      reconcile(server, local);
-      OCC = server.OCC; EVT = server.EVT; COH = server.COH; _syncedKeys = serverKeys;
-      localStorage.setItem(CACHE_KEY, JSON.stringify({ OCC, EVT, COH }));
-      loaded = true;
-      const recovered = Object.keys(collectRows().keys).length - Object.keys(serverKeys).length;
-      if(recovered > 0){ setSyncStatus('saving', `Recovering ${recovered} unsynced edit(s)…`); runSync(); }
-      else setSyncStatus('saved','Synced');
+      const serverKeys=collectRows(server.OCC,server.EVT,server.COH).keys;
+      reconcile(server,local);
+      OCC=server.OCC; EVT=server.EVT; COH=server.COH; _syncedKeys=serverKeys;
+      localStorage.setItem(CACHE_KEY,JSON.stringify({OCC,EVT,COH})); loaded=true;
+      const recovered=Object.keys(collectRows().keys).length-Object.keys(serverKeys).length;
+      if(recovered>0){ setSyncStatus('saving',`Recovering ${recovered} unsynced edit(s)…`); runSync(); } else setSyncStatus('saved','Synced');
     }
-  } catch(e){ console.error('Supabase load failed:', e); }
+  } catch(e){ console.error('Supabase load failed:',e); }
   if(!loaded){
-    if(local && (local.OCC || local.EVT || local.COH)){ OCC = local.OCC || {}; EVT = local.EVT || {}; COH = local.COH || {}; _syncedKeys = {}; loaded = true; setSyncStatus('error','Offline (cached) — will sync when back'); runSync(); }
-    else { OCC = {}; EVT = {}; COH = {}; setSyncStatus('error','No data — check connection'); }
+    if(local&&(local.OCC||local.EVT||local.COH)){ OCC=local.OCC||{}; EVT=local.EVT||{}; COH=local.COH||{}; _syncedKeys={}; loaded=true; setSyncStatus('error','Offline (cached) — will sync when back'); runSync(); }
+    else { OCC={}; EVT={}; COH={}; setSyncStatus('error','No data — check connection'); }
   }
   renderAll();
 }
 
-// =====================================================================
-// DERIVED
-// =====================================================================
-const occInCage = n => Object.values(OCC).filter(o => o.cage === n && !o.exited_at).sort((a,b) => (a.entered_at||'') < (b.entered_at||'') ? -1 : 1);
-function mouseLabel(o){
-  const b = []; if(o.mouse_id) b.push(o.mouse_id); if(o.sex) b.push(o.sex);
-  if(o.genotype) b.push(o.genotype); const a = ageMonths(o.dob); if(a != null) b.push(a + 'mo');
-  return b.join(' · ') || '(mouse)';
-}
-const genoColor = g => { if(!g) return '#94a3b8'; let h = 0; for(let i=0;i<g.length;i++) h = (h*31 + g.charCodeAt(i)) % 360; return `hsl(${h},55%,60%)`; };
-// events that affect a given cage (its own + whole-room)
-const eventsForCage = n => Object.values(EVT).filter(e => e.cage === 0 || e.cage === n);
+// ===== DERIVED =====
+const occInCage = n => Object.values(OCC).filter(o=>o.cage===n && !o.exited_at).sort((a,b)=>(a.entered_at||'')<(b.entered_at||'')?-1:1);
+function mouseLabel(o){ const b=[]; if(o.mouse_id)b.push(o.mouse_id); if(o.sex)b.push(o.sex); if(o.genotype)b.push(o.genotype); const a=ageMonths(o.dob); if(a!=null)b.push(a+'mo'); return b.join(' · ')||'(mouse)'; }
+const genoChipColor = g => { if(!g) return '#94a3b8'; let h=0; for(let i=0;i<g.length;i++)h=(h*31+g.charCodeAt(i))%360; return `hsl(${h},55%,60%)`; };
+const eventsForCage = n => Object.values(EVT).filter(e=>e.cage===ROOM||e.cage===n);
+const labEvents = labKey => Object.values(EVT).filter(e=>e.cage===ROOM||e.cage===TYE_CAGE||LABS[labKey].cages.includes(e.cage));
 
-// =====================================================================
-// RENDER — the room
-// =====================================================================
-function renderAll(){ renderRoom(); renderEventLog(); renderOccLog(); renderCohorts(); }
-
+// ===== RENDER =====
+function renderAll(){ renderLab('AD'); renderLab('ALS'); renderCohortTimeline(); renderCohorts(); }
 function cageHtml(c){
-  const occ = occInCage(c.id);
-  const list = occ.length ? `<div class="ebslist">${occ.map(o => `<div class="occrow" title="${esc(mouseLabel(o))}">${esc(mouseLabel(o))}</div>`).join('')}</div>` : '';
-  const mice = occ.length ? `<div class="ebsmice">${occ.map((o,i) => mouseIconEl(o,i)).join('')}</div>`
-                          : `<div class="ebsempty">empty<br><span class="ebssub">click to add a mouse</span></div>`;
-  const nEv = eventsForCage(c.id).length;
-  return `<div class="ebscage" style="--lab:${LAB_COLOR[c.lab]||'#4f9cf9'}" onclick="openCage(${c.id})">
+  const occ=occInCage(c.id);
+  const list=occ.length?`<div class="ebslist">${occ.map(o=>`<div class="occrow" title="${esc(mouseLabel(o))}">${esc(mouseLabel(o))}</div>`).join('')}</div>`:'';
+  const mice=occ.length?`<div class="ebsmice">${occ.map((o,i)=>mouseIconEl(o,i)).join('')}</div>`:`<div class="ebsempty">empty<br><span class="ebssub">click to add a mouse</span></div>`;
+  const nEv=eventsForCage(c.id).length;
+  return `<div class="ebscage" style="--lab:${LABS[c.lab]?LABS[c.lab].color:'#4f9cf9'}" onclick="openCage(${c.id})">
     <div class="ebscam"><span class="lens"></span><span class="camlbl">${c.cam}</span><span class="camct">· ${occ.length}</span></div>
     <div class="ebsbox">${list}${mice}</div>
-    <div class="cagefoot">${c.cam} · ${c.lab}${nEv ? ` · <span class="excbadge">⚠${nEv}</span>` : ''}</div>
+    <div class="cagefoot">${c.cam}${nEv?` · <span class="excbadge">⚠${nEv}</span>`:''}</div>
   </div>`;
 }
-function roomCount(r){ return r.cages.reduce((s,id) => s + occInCage(id).length, 0); }
-function renderRoom(){
-  document.getElementById('room').innerHTML = ROWS.map(r => `
-    <div class="hcmrowhdr" style="--lab:${LAB_COLOR[r.key]}"><span class="dot"></span>${esc(r.title)} <span class="cnt">· ${roomCount(r)} mice inside</span></div>
-    <div class="ebsrack">${r.cages.map(id => cageHtml(cageById(id))).join('')}</div>
-  `).join('');
+function renderLab(labKey){
+  const L=LABS[labKey];
+  const rk=document.getElementById('room-'+labKey); if(rk) rk.innerHTML=`<div class="ebsrack">${L.cages.map(id=>cageHtml(cageById(id))).join('')}</div>`;
+  renderEventTable('evt-'+labKey, labEvents(labKey));
+  renderOccTable('occ-'+labKey, Object.values(OCC).filter(o=>L.cages.includes(o.cage)));
 }
-
-function renderEventLog(){
-  const evts = Object.values(EVT).sort((a,b) => (a.at||'') < (b.at||'') ? 1 : -1);
-  document.getElementById('evtCount').textContent = evts.length ? `· ${evts.length}` : '';
-  const host = document.getElementById('eventLog');
-  if(!evts.length){ host.innerHTML = '<div class="empty">No disturbances logged yet. Click “＋ Log disturbance” whenever something happens that should be excluded from analysis.</div>'; return; }
-  host.innerHTML = `<table><thead><tr>
-    <th>When (PT)</th><th>Type</th><th>Applies to</th><th>Excluded window</th><th>Note</th><th></th></tr></thead><tbody>
-    ${evts.map(e => {
-      const t = evtType(e.type); const scope = e.cage === 0 ? 'Whole room' : (cageById(e.cage)?.cam + ' · ' + cageById(e.cage)?.lab);
-      const end = addMin(e.at, e.exclude_min);
+function renderEventTable(hostId, evts){
+  const host=document.getElementById(hostId); if(!host) return;
+  evts=evts.slice().sort((a,b)=>(a.at||'')<(b.at||'')?1:-1);
+  if(!evts.length){ host.innerHTML='<div class="empty">No events logged yet. Use “＋ Entry an event”.</div>'; return; }
+  host.innerHTML=`<table><thead><tr><th>When</th><th>Action</th><th>Affected</th><th>Excluded window</th><th>Lab · by</th><th>Note</th><th></th></tr></thead><tbody>
+    ${evts.map(e=>{ const t=actType(e.type); const win=e.exclude_min>0?`${fmtDT(e.at)} → ${fmtDT(addMin(e.at,e.exclude_min))} <span style="opacity:.6">(${e.exclude_min}m)</span>`:'<span style="opacity:.6">— no exclusion</span>';
       return `<tr>
         <td>${fmtDT(e.at)}</td>
-        <td><span class="chip" style="background:${EVT_COLOR[e.type]||'#94a3b8'}22;color:${EVT_COLOR[e.type]||'#94a3b8'}">${esc(t.label)}</span></td>
-        <td>${esc(scope)}</td>
-        <td class="tdim">${fmtDT(e.at)} → ${fmtDT(end)} <span style="opacity:.7">(${e.exclude_min}m)</span></td>
+        <td><span class="chip" style="background:${(ACT_COLOR[e.type]||'#94a3b8')}22;color:${ACT_COLOR[e.type]||'#94a3b8'}">${esc(t.label)}</span></td>
+        <td>${esc(affectedLabel(e.cage))}</td>
+        <td class="tdim">${win}</td>
+        <td class="tdim">${esc(e.lab||'')}${e.by?' · '+esc(e.by):''}</td>
         <td class="tdim">${esc(e.note||'')}</td>
-        <td><button class="btn btn-danger btn-sm" onclick="deleteEvent('${e.id}')">Delete</button></td>
-      </tr>`;
-    }).join('')}
+        <td><button class="btn btn-danger btn-sm" onclick="deleteEvent('${e.id}')">✕</button></td>
+      </tr>`; }).join('')}
+  </tbody></table>`;
+}
+function renderOccTable(hostId, occ){
+  const host=document.getElementById(hostId); if(!host) return;
+  occ=occ.slice().sort((a,b)=>(a.entered_at||'')<(b.entered_at||'')?1:-1);
+  if(!occ.length){ host.innerHTML='<div class="empty">No mice logged in these cages yet.</div>'; return; }
+  host.innerHTML=`<table><thead><tr><th>Cage</th><th>Mouse</th><th>Sex</th><th>Genotype</th><th>Entered</th><th>Status</th><th></th></tr></thead><tbody>
+    ${occ.map(o=>{ const c=cageById(o.cage); return `<tr>
+      <td>${c?c.cam:o.cage}</td>
+      <td style="font-weight:700">${esc(o.mouse_id||'—')}</td>
+      <td>${esc(o.sex||'')}</td>
+      <td>${o.genotype?`<span class="chip" style="background:${genoChipColor(o.genotype)}22;color:${genoChipColor(o.genotype)}">${esc(o.genotype)}</span>`:''}</td>
+      <td class="tdim">${fmtDT(o.entered_at)}</td>
+      <td>${o.exited_at?`<span class="tdim">left ${fmtDT(o.exited_at)}</span>`:'<span class="chip" style="background:#34d39922;color:#34d399">inside</span>'}</td>
+      <td>${o.exited_at?'':`<button class="btn btn-sec btn-sm" onclick="exitOcc('${o.id}')">Mark out</button> `}<button class="btn btn-danger btn-sm" onclick="deleteOcc('${o.id}')">✕</button></td>
+    </tr>`; }).join('')}
   </tbody></table>`;
 }
 
-function renderOccLog(){
-  const occ = Object.values(OCC).sort((a,b) => (a.entered_at||'') < (b.entered_at||'') ? 1 : -1);
-  const host = document.getElementById('occLog');
-  if(!occ.length){ host.innerHTML = '<div class="empty">No mice logged yet. Click a cage (or “＋ Add mouse”) to record a mouse entering.</div>'; return; }
-  host.innerHTML = `<table><thead><tr>
-    <th>Cage</th><th>Mouse</th><th>Sex</th><th>Genotype</th><th>Entered</th><th>Status</th><th></th></tr></thead><tbody>
-    ${occ.map(o => {
-      const c = cageById(o.cage);
-      return `<tr>
-        <td>${c ? c.cam + ' · ' + c.lab : o.cage}</td>
-        <td style="font-weight:700">${esc(o.mouse_id||'—')}</td>
-        <td>${esc(o.sex||'')}</td>
-        <td>${o.genotype ? `<span class="chip" style="background:${genoColor(o.genotype)}22;color:${genoColor(o.genotype)}">${esc(o.genotype)}</span>` : ''}</td>
-        <td class="tdim">${fmtDT(o.entered_at)}</td>
-        <td>${o.exited_at ? `<span class="tdim">left ${fmtDT(o.exited_at)}</span>` : '<span class="chip" style="background:#34d39922;color:#34d399">inside</span>'}</td>
-        <td>${o.exited_at ? '' : `<button class="btn btn-sec btn-sm" onclick="exitOcc('${o.id}')">Mark out</button> `}<button class="btn btn-danger btn-sm" onclick="deleteOcc('${o.id}')">Delete</button></td>
-      </tr>`;
-    }).join('')}
-  </tbody></table>`;
+// cohort swimlane timeline
+function renderCohortTimeline(){
+  const host=document.getElementById('cohTimeline'); if(!host) return;
+  const all=Object.values(COH);
+  const list=all.slice().sort((a,b)=>cohKey(a.start)<cohKey(b.start)?-1:1);
+  if(!all.length){ host.innerHTML=''; return; }
+  const toDate=s=>{ s=cohKey(s); const p=(s||'').split('-').map(Number); return p[0]?new Date(p[0],(p[1]||1)-1,p[2]||1).getTime():null; };
+  const now=Date.now(); let t0=Infinity,t1=-Infinity;
+  all.forEach(c=>{ const s=toDate(c.start); const e=(!c.end||c.end==='present')?now:toDate(c.end); if(s!=null){ t0=Math.min(t0,s); t1=Math.max(t1,e||now); } });
+  if(!isFinite(t0)){ host.innerHTML=''; return; }
+  const span=(t1-t0)||1, pct=t=>100*(t-t0)/span;
+  const used=new Set(); all.forEach(c=>Object.keys(c.cages||{}).forEach(k=>used.add(+k)));
+  const rows=[1,2,3,4,5,6,7,8].filter(n=>used.has(n));
+  if(!rows.length){ host.innerHTML='<div class="empty" style="margin-bottom:14px">Add a per-cage genotype to a cohort period to see the swimlane.</div>'; return; }
+  const genos=new Set(); all.forEach(c=>Object.values(c.cages||{}).forEach(g=>genos.add(g)));
+  const seg=(c,n)=>{ const g=(c.cages||{})[n]; if(!g) return ''; const s=toDate(c.start); if(s==null) return ''; const e=(!c.end||c.end==='present')?now:toDate(c.end); const l=pct(s), w=Math.max(0.6,pct(e)-pct(s));
+    return `<div class="tlseg" style="left:${l}%;width:${w}%;background:${genoColor(g)}" title="${esc(c.batch||'')} · ${esc(g)} · ${esc(c.start)} → ${esc(c.end||'present')}">${w>7?esc(g):''}</div>`; };
+  const trackRows=rows.map(n=>`<div class="tlrow"><div class="tllbl">${cageById(n)?cageById(n).cam:('Cam0'+n)}</div><div class="tltrack">${list.map(c=>seg(c,n)).join('')}</div></div>`).join('');
+  const y0=new Date(t0).getFullYear(), y1=new Date(t1).getFullYear(); let ticks='';
+  for(let y=y0;y<=y1+1;y++){ const tt=new Date(y,0,1).getTime(); if(tt<t0||tt>t1) continue; ticks+=`<span class="tltick" style="left:${pct(tt)}%">${y}</span>`; }
+  const legend=[...genos].map(g=>`<span><span class="sw" style="background:${genoColor(g)}"></span>${esc(g)}</span>`).join('');
+  host.innerHTML=`<div class="tl">${trackRows}</div><div class="tlaxis">${ticks}</div><div class="tllegend">${legend}</div>`;
 }
-
-// =====================================================================
-// CAGE MODAL — occupants + add mouse
-// =====================================================================
-let _cageCtx = null;
-window.openCage = function(n){
-  _cageCtx = n;
-  const body = document.getElementById('cageBody');
-  const cageOpts = CAGES.map(c => `<option value="${c.id}"${c.id===n?' selected':''}>${c.cam} · ${c.lab}</option>`).join('');
-  const c = n ? cageById(n) : null;
-  const occ = n ? occInCage(n) : [];
-  const gone = n ? Object.values(OCC).filter(o => o.cage === n && o.exited_at).sort((a,b)=>(a.exited_at<b.exited_at?1:-1)) : [];
-  body.innerHTML = `
-    <h3>${c ? `${c.cam} · ${c.lab}` : 'Add a mouse'}</h3>
-    <div class="csub">${c ? 'Mice currently in this cage, and add a new one.' : 'Record a mouse entering a cage.'}</div>
-    ${c && occ.length ? `<div class="divh">Inside now (${occ.length})</div>` + occ.map(occItemHtml).join('') : ''}
-    ${c && gone.length ? `<div class="divh">Previously (${gone.length})</div>` + gone.map(occItemHtml).join('') : ''}
-    ${c && !occ.length && !gone.length ? '<div class="empty" style="padding:6px 2px">No mice recorded in this cage yet.</div>' : ''}
-    <div class="divh">＋ Add a mouse</div>
-    <div class="grid2">
-      <div class="fg"><label>Cage</label><select id="oc-cage">${cageOpts}</select></div>
-      <div class="fg"><label>Mouse ID / ear-tag</label><input id="oc-id" placeholder="e.g. 1234 or M1"></div>
-      <div class="fg"><label>Sex</label><select id="oc-sex"><option value="">—</option><option>M</option><option>F</option></select></div>
-      <div class="fg"><label>Genotype</label><input id="oc-geno" placeholder="e.g. AD, WT, SOD1"></div>
-      <div class="fg"><label>DOB (optional)</label><input type="date" id="oc-dob"></div>
-      <div class="fg"><label>Entered (PT)</label><input type="datetime-local" id="oc-at" value="${nowInput()}"></div>
-      <div class="fg full"><label>Note (optional)</label><input id="oc-note"></div>
-    </div>
-    <div class="acts">
-      <button class="btn btn-sec" onclick="closeModal('cageModal')">Close</button>
-      ${c ? `<button class="btn btn-sec" onclick="closeModal('cageModal');openEvent(${n})">⚠ Log disturbance</button>` : ''}
-      <button class="btn btn-primary" onclick="addOcc()">Add mouse</button>
-    </div>`;
-  document.getElementById('cageModal').classList.add('open');
-};
-function occItemHtml(o){
-  return `<div class="occitem${o.exited_at?' gone':''}">
-    <span class="oi">${MOUSE_SVGS[0]}</span>
-    <div style="flex:1">
-      <div class="ottl">${esc(o.mouse_id||'(mouse)')}</div>
-      <div class="osub">${esc([o.sex,o.genotype,ageMonths(o.dob)!=null?ageMonths(o.dob)+'mo':''].filter(Boolean).join(' · '))} · in ${fmtDT(o.entered_at)}${o.exited_at?` · out ${fmtDT(o.exited_at)}`:''}</div>
-    </div>
-    ${o.exited_at ? '' : `<button class="btn btn-sec btn-sm" onclick="exitOcc('${o.id}')">Mark out</button>`}
-    <button class="btn btn-danger btn-sm" onclick="deleteOcc('${o.id}')">✕</button>
-  </div>`;
-}
-window.addOcc = function(){
-  const cage = +document.getElementById('oc-cage').value;
-  const mouse_id = document.getElementById('oc-id').value.trim();
-  const at = document.getElementById('oc-at').value || nowInput();
-  if(!mouse_id && !confirm('No mouse ID entered — add anyway?')) return;
-  const o = {
-    id: uid(), cage, mouse_id,
-    sex: document.getElementById('oc-sex').value,
-    genotype: document.getElementById('oc-geno').value.trim(),
-    dob: document.getElementById('oc-dob').value,
-    entered_at: at, exited_at: null,
-    note: document.getElementById('oc-note').value.trim(),
-  };
-  OCC[o.id] = o; saveLocal();
-  openCage(cage); // refresh the panel on the cage we just added to
-};
-window.exitOcc = function(id){
-  const o = OCC[id]; if(!o) return;
-  const t = prompt('Mark ' + (o.mouse_id||'mouse') + ' as leaving at (PT, YYYY-MM-DDTHH:MM):', nowInput());
-  if(t == null) return;
-  o.exited_at = t.trim() || nowInput(); saveLocal();
-  if(document.getElementById('cageModal').classList.contains('open') && _cageCtx) openCage(_cageCtx);
-};
-window.deleteOcc = function(id){
-  const o = OCC[id]; if(!o) return;
-  if(!confirm('Delete this occupancy record for ' + (o.mouse_id||'mouse') + '? (removes it from the log entirely)')) return;
-  delete OCC[id]; saveLocal();
-  if(document.getElementById('cageModal').classList.contains('open') && _cageCtx != null) openCage(_cageCtx);
-};
-
-// =====================================================================
-// EVENT MODAL
-// =====================================================================
-window.openEvent = function(cage){
-  const typeSel = document.getElementById('ev-type');
-  typeSel.innerHTML = EVENT_TYPES.map(t => `<option value="${t.key}">${t.label}</option>`).join('');
-  const scopeSel = document.getElementById('ev-scope');
-  scopeSel.innerHTML = `<option value="0">Whole room (all 8 cages)</option>` + CAGES.map(c => `<option value="${c.id}">${c.cam} · ${c.lab}</option>`).join('');
-  scopeSel.value = String(cage || 0);
-  document.getElementById('ev-at').value = nowInput();
-  onEvTypeChange();
-  document.getElementById('eventModal').classList.add('open');
-};
-window.onEvTypeChange = function(){
-  const t = evtType(document.getElementById('ev-type').value);
-  document.getElementById('ev-min').value = t.mins;
-  // whole-room event types default the scope to "whole room" (0)
-  if(t.room) document.getElementById('ev-scope').value = '0';
-};
-window.saveEvent = function(){
-  const e = {
-    id: uid(),
-    cage: +document.getElementById('ev-scope').value,
-    type: document.getElementById('ev-type').value,
-    at: document.getElementById('ev-at').value || nowInput(),
-    exclude_min: Math.max(0, +document.getElementById('ev-min').value || 0),
-    note: document.getElementById('ev-note').value.trim(),
-  };
-  EVT[e.id] = e; saveLocal();
-  closeModal('eventModal');
-};
-window.deleteEvent = function(id){
-  if(!confirm('Delete this disturbance event? (its exclusion window is removed)')) return;
-  delete EVT[id]; saveLocal();
-};
-
-// =====================================================================
-// COHORT HISTORY — room-level batch timeline (for segmenting analysis)
-// =====================================================================
-const cohKey = s => String(s||'').replace(/^\D+/, '');   // ignore a leading "~" so approximate dates still sort chronologically
 function renderCohorts(){
-  const list = Object.values(COH).sort((a,b) => cohKey(a.start) < cohKey(b.start) ? -1 : 1);
-  const host = document.getElementById('cohLog');
-  if(!host) return;
-  if(!list.length){ host.innerHTML = '<div class="empty">No cohort periods yet. Click “＋ Cohort period” to add the batch history.</div>'; return; }
-  host.innerHTML = `<table><thead><tr>
-    <th>Batch</th><th>Dates</th><th>Genotypes</th><th>Mice/cage</th><th>In manifest</th><th>Note</th><th></th></tr></thead><tbody>
-    ${list.map(c => `<tr>
+  const list=Object.values(COH).sort((a,b)=>cohKey(a.start)<cohKey(b.start)?-1:1);
+  const host=document.getElementById('cohLog'); if(!host) return;
+  if(!list.length){ host.innerHTML='<div class="empty">No cohort periods yet.</div>'; return; }
+  host.innerHTML=`<table><thead><tr><th>Batch</th><th>Dates</th><th>Genotypes</th><th>Mice/cage</th><th>In manifest</th><th>Note</th><th></th></tr></thead><tbody>
+    ${list.map(c=>`<tr>
       <td style="font-weight:700">${esc(c.batch||'—')}</td>
       <td class="tdim">${esc(c.start||'?')} → ${esc(c.end||'present')}</td>
       <td>${esc(c.genotypes||'')}</td>
@@ -681,121 +508,149 @@ function renderCohorts(){
     </tr>`).join('')}
   </tbody></table>`;
 }
-window.openCohort = function(id){
-  const c = id ? COH[id] : {};
-  document.getElementById('coh-title').textContent = id ? 'Edit cohort period' : 'Add cohort period';
-  document.getElementById('coh-id').value    = id || '';
-  document.getElementById('coh-batch').value = c.batch || '';
-  document.getElementById('coh-start').value = c.start || '';
-  document.getElementById('coh-end').value   = c.end || '';
-  document.getElementById('coh-geno').value  = c.genotypes || '';
-  document.getElementById('coh-mpc').value   = c.mice_per_cage || '';
-  document.getElementById('coh-man').value   = c.in_manifest || '';
-  document.getElementById('coh-note').value  = c.note || '';
+
+// ===== CAGE MODAL / OCCUPANCY =====
+let _cageCtx=null;
+window.openCage=function(n){
+  _cageCtx=n; const body=document.getElementById('cageBody');
+  const cageOpts=CAGES.map(c=>`<option value="${c.id}"${c.id===n?' selected':''}>${c.cam} · ${c.lab}</option>`).join('');
+  const c=n?cageById(n):null; const occ=n?occInCage(n):[];
+  const gone=n?Object.values(OCC).filter(o=>o.cage===n&&o.exited_at).sort((a,b)=>(a.exited_at<b.exited_at?1:-1)):[];
+  body.innerHTML=`
+    <h3>${c?`${c.cam} · ${c.lab}`:'Add a mouse'}</h3>
+    <div class="csub">${c?'Mice currently in this cage, and add a new one.':'Record a mouse entering a cage.'}</div>
+    ${c&&occ.length?`<div class="divh">Inside now (${occ.length})</div>`+occ.map(occItemHtml).join(''):''}
+    ${c&&gone.length?`<div class="divh">Previously (${gone.length})</div>`+gone.map(occItemHtml).join(''):''}
+    ${c&&!occ.length&&!gone.length?'<div class="empty" style="padding:6px 2px">No mice recorded in this cage yet.</div>':''}
+    <div class="divh">＋ Add a mouse</div>
+    <div class="grid2">
+      <div class="fg"><label>Cage</label><select id="oc-cage">${cageOpts}</select></div>
+      <div class="fg"><label>Mouse ID / ear-tag</label><input id="oc-id" placeholder="e.g. 1234 or M1"></div>
+      <div class="fg"><label>Sex</label><select id="oc-sex"><option value="">—</option><option>M</option><option>F</option></select></div>
+      <div class="fg"><label>Genotype</label><input id="oc-geno" placeholder="e.g. WT, APP, SOD1"></div>
+      <div class="fg"><label>DOB (optional)</label><input type="date" id="oc-dob"></div>
+      <div class="fg"><label>Entered (PT)</label><input type="datetime-local" id="oc-at" value="${nowInput()}"></div>
+      <div class="fg full"><label>Note (optional)</label><input id="oc-note"></div>
+    </div>
+    <div class="acts">
+      <button class="btn btn-sec" onclick="closeModal('cageModal')">Close</button>
+      ${c?`<button class="btn btn-sec" onclick="closeModal('cageModal');openEvent(${n})">⚠ Entry an event</button>`:''}
+      <button class="btn btn-primary" onclick="addOcc()">Add mouse</button>
+    </div>`;
+  document.getElementById('cageModal').classList.add('open');
+};
+function occItemHtml(o){
+  return `<div class="occitem${o.exited_at?' gone':''}"><span class="oi">${MOUSE_SVGS[0]}</span>
+    <div style="flex:1"><div class="ottl">${esc(o.mouse_id||'(mouse)')}</div>
+    <div class="osub">${esc([o.sex,o.genotype,ageMonths(o.dob)!=null?ageMonths(o.dob)+'mo':''].filter(Boolean).join(' · '))} · in ${fmtDT(o.entered_at)}${o.exited_at?` · out ${fmtDT(o.exited_at)}`:''}</div></div>
+    ${o.exited_at?'':`<button class="btn btn-sec btn-sm" onclick="exitOcc('${o.id}')">Mark out</button>`}
+    <button class="btn btn-danger btn-sm" onclick="deleteOcc('${o.id}')">✕</button></div>`;
+}
+window.addOcc=function(){
+  const cage=+document.getElementById('oc-cage').value;
+  const mouse_id=document.getElementById('oc-id').value.trim();
+  if(!mouse_id&&!confirm('No mouse ID entered — add anyway?')) return;
+  const o={ id:uid(), cage, mouse_id, sex:document.getElementById('oc-sex').value, genotype:document.getElementById('oc-geno').value.trim(),
+    dob:document.getElementById('oc-dob').value, entered_at:document.getElementById('oc-at').value||nowInput(), exited_at:null, note:document.getElementById('oc-note').value.trim() };
+  OCC[o.id]=o; saveLocal(); openCage(cage);
+};
+window.exitOcc=function(id){ const o=OCC[id]; if(!o) return; const t=prompt('Mark '+(o.mouse_id||'mouse')+' as leaving at (PT, YYYY-MM-DDTHH:MM):',nowInput()); if(t==null) return; o.exited_at=t.trim()||nowInput(); saveLocal(); if(document.getElementById('cageModal').classList.contains('open')&&_cageCtx!=null) openCage(_cageCtx); };
+window.deleteOcc=function(id){ const o=OCC[id]; if(!o) return; if(!confirm('Delete this occupancy record for '+(o.mouse_id||'mouse')+'?')) return; delete OCC[id]; saveLocal(); if(document.getElementById('cageModal').classList.contains('open')&&_cageCtx!=null) openCage(_cageCtx); };
+
+// ===== EVENT MODAL =====
+window.openEvent=function(cage){
+  document.getElementById('ev-lab').innerHTML=EVENT_LABS.map(l=>`<option>${l}</option>`).join('');
+  document.getElementById('ev-by').value=cfgName();
+  document.getElementById('ev-type').innerHTML=ACTION_TYPES.map(t=>`<option value="${t.key}">${t.label}</option>`).join('');
+  document.getElementById('ev-scope').innerHTML=`<option value="0">Whole room (all cages)</option>`
+    +`<optgroup label="AD · Kuo-Fen">${LABS.AD.cages.map(id=>`<option value="${id}">${cageById(id).cam}</option>`).join('')}</optgroup>`
+    +`<optgroup label="ALS · Eiman">${LABS.ALS.cages.map(id=>`<option value="${id}">${cageById(id).cam}</option>`).join('')}</optgroup>`
+    +`<option value="${TYE_CAGE}">Tye lab cages</option>`;
+  document.getElementById('ev-scope').value=String(cage||0);
+  document.getElementById('ev-at').value=nowInput();
+  onActionChange();
+  document.getElementById('eventModal').classList.add('open');
+};
+window.onActionChange=function(){ document.getElementById('ev-min').value=actType(document.getElementById('ev-type').value).mins; };
+window.saveEvent=function(){
+  const by=document.getElementById('ev-by').value.trim();
+  const e={ id:uid(), cage:+document.getElementById('ev-scope').value, type:document.getElementById('ev-type').value,
+    lab:document.getElementById('ev-lab').value, by, at:document.getElementById('ev-at').value||nowInput(),
+    exclude_min:Math.max(0,+document.getElementById('ev-min').value||0), note:document.getElementById('ev-note').value.trim() };
+  EVT[e.id]=e; if(by){ try{ localStorage.setItem(NAME_KEY,by); }catch(_){} }
+  saveLocal(); closeModal('eventModal');
+};
+window.deleteEvent=function(id){ if(!confirm('Delete this event? (its exclusion window is removed)')) return; delete EVT[id]; saveLocal(); };
+
+// ===== COHORT MODAL =====
+function cagesToStr(m){ m=m||{}; return Object.keys(m).sort((a,b)=>a-b).map(k=>k+':'+m[k]).join(', '); }
+function strToCages(s){ const m={}; String(s||'').split(',').forEach(p=>{ const x=p.split(':'); const n=parseInt(x[0]); const g=(x[1]||'').trim(); if(n>=1&&n<=8&&g) m[n]=g; }); return m; }
+window.openCohort=function(id){
+  const c=id?COH[id]:{};
+  document.getElementById('coh-title').textContent=id?'Edit cohort period':'Add cohort period';
+  document.getElementById('coh-id').value=id||'';
+  document.getElementById('coh-batch').value=c.batch||''; document.getElementById('coh-start').value=c.start||'';
+  document.getElementById('coh-end').value=c.end||''; document.getElementById('coh-geno').value=c.genotypes||'';
+  document.getElementById('coh-cages').value=cagesToStr(c.cages); document.getElementById('coh-mpc').value=c.mice_per_cage||'';
+  document.getElementById('coh-man').value=c.in_manifest||''; document.getElementById('coh-note').value=c.note||'';
   document.getElementById('cohModal').classList.add('open');
 };
-window.saveCohort = function(){
-  const id = document.getElementById('coh-id').value || ('coh_' + uid());
-  COH[id] = { id,
-    batch:         document.getElementById('coh-batch').value.trim(),
-    start:         document.getElementById('coh-start').value.trim(),
-    end:           document.getElementById('coh-end').value.trim(),
-    genotypes:     document.getElementById('coh-geno').value.trim(),
-    mice_per_cage: document.getElementById('coh-mpc').value.trim(),
-    in_manifest:   document.getElementById('coh-man').value.trim(),
-    note:          document.getElementById('coh-note').value.trim(),
-  };
+window.saveCohort=function(){
+  const id=document.getElementById('coh-id').value||('coh_'+uid());
+  COH[id]={ id, batch:document.getElementById('coh-batch').value.trim(), start:document.getElementById('coh-start').value.trim(),
+    end:document.getElementById('coh-end').value.trim(), genotypes:document.getElementById('coh-geno').value.trim(),
+    cages:strToCages(document.getElementById('coh-cages').value), mice_per_cage:document.getElementById('coh-mpc').value.trim(),
+    in_manifest:document.getElementById('coh-man').value.trim(), note:document.getElementById('coh-note').value.trim() };
   saveLocal(); closeModal('cohModal');
 };
-window.deleteCohort = function(id){ if(!confirm('Delete this cohort period?')) return; delete COH[id]; saveLocal(); };
+window.deleteCohort=function(id){ if(!confirm('Delete this cohort period?')) return; delete COH[id]; saveLocal(); };
 
-// =====================================================================
-// SETTINGS / MISC
-// =====================================================================
-window.switchTab = function(t){
-  document.querySelectorAll('.tabpanel').forEach(p => p.style.display = 'none');
-  const el = document.getElementById('tab-' + t); if(el) el.style.display = 'block';
-  document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === t));
+// ===== SETTINGS / TABS / THEME =====
+window.switchTab=function(t){ document.querySelectorAll('.tabpanel').forEach(p=>p.style.display='none'); const el=document.getElementById('tab-'+t); if(el) el.style.display='block'; document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.tab===t)); };
+function applyTheme(t){ document.documentElement.dataset.theme=t; try{ localStorage.setItem('hcm-theme',t); }catch(e){} const b=document.getElementById('themeBtn'); if(b) b.textContent=t==='light'?'🌙':'☀️'; }
+window.toggleTheme=function(){ applyTheme(document.documentElement.dataset.theme==='light'?'dark':'light'); };
+window.openSettings=function(){ document.getElementById('set-name').value=cfgName(); document.getElementById('setModal').classList.add('open'); };
+window.saveSettings=function(){ localStorage.setItem(NAME_KEY,document.getElementById('set-name').value.trim()); closeModal('setModal'); };
+window.closeModal=function(id){ document.getElementById(id).classList.remove('open'); };
+window.refresh=async function(){ try{ await reloadFromCloud(); }catch(e){ console.error(e); } };
+async function reloadFromCloud(){ setSyncStatus('saving','Reloading…'); const server=await loadFromSupabase(); if(server){ OCC=server.OCC; EVT=server.EVT; COH=server.COH; _syncedKeys=collectRows().keys; localStorage.setItem(CACHE_KEY,JSON.stringify({OCC,EVT,COH})); setSyncStatus('saved','Synced'); renderAll(); } else setSyncStatus('error','No data'); }
+
+// ===== EXPORT =====
+function csvCell(v){ v=v==null?'':String(v); return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }
+function download(name,text,mime){ const b=new Blob([text],{type:mime||'text/plain'}); const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download=name; a.click(); setTimeout(()=>URL.revokeObjectURL(a.href),2000); }
+function dlCsv(name,head,rows){ const csv=[head.join(',')].concat(rows.map(r=>head.map(h=>csvCell(r[h])).join(','))).join('\n'); download(`${name}_${stamp()}.csv`,csv,'text/csv'); }
+const stamp=()=>nowInput().slice(0,10);
+window.toggleLabExport=function(labKey,ev){ ev.stopPropagation(); document.querySelectorAll('.menu').forEach(m=>{ if(m.id!=='expMenu-'+labKey) m.classList.remove('open'); }); document.getElementById('expMenu-'+labKey).classList.toggle('open'); };
+document.addEventListener('click',()=>document.querySelectorAll('.menu').forEach(m=>m.classList.remove('open')));
+window.labExport=function(labKey,kind){
+  const L=LABS[labKey], cages=L.cages;
+  if(!confirm(`You are about to export ${L.owner} lab (${L.title}) — ${kind}.\n\nContinue?`)) return;
+  if(kind==='events'){
+    const evts=Object.values(EVT).filter(e=>e.cage===ROOM||cages.includes(e.cage)).sort((a,b)=>(a.at<b.at?-1:1));
+    dlCsv(`hcm_${labKey}_events`, ['when','action','affected','exclude_minutes','lab','by','note'],
+      evts.map(e=>({when:e.at,action:actType(e.type).label,affected:affectedLabel(e.cage),exclude_minutes:e.exclude_min,lab:e.lab||'',by:e.by||'',note:e.note||''})));
+  } else if(kind==='occupancy'){
+    const occ=Object.values(OCC).filter(o=>cages.includes(o.cage));
+    dlCsv(`hcm_${labKey}_occupancy`, ['cage','mouse_id','sex','genotype','dob','entered_at','exited_at','status','note'],
+      occ.map(o=>{ const c=cageById(o.cage); return {cage:c?c.cam:o.cage,mouse_id:o.mouse_id,sex:o.sex,genotype:o.genotype,dob:o.dob,entered_at:o.entered_at,exited_at:o.exited_at||'',status:o.exited_at?'out':'inside',note:o.note||''}; }));
+  } else { // exclusion windows
+    const out=[];
+    Object.values(EVT).forEach(e=>{ if(!(e.exclude_min>0)) return; const cs=e.cage===ROOM?cages:(cages.includes(e.cage)?[e.cage]:[]); cs.forEach(cid=>{ const c=cageById(cid); out.push({cage:c.cam,lab:labKey,exclude_start:e.at,exclude_end:addMin(e.at,e.exclude_min),action:actType(e.type).label,minutes:e.exclude_min,note:e.note||''}); }); });
+    out.sort((a,b)=>a.cage<b.cage?-1:a.cage>b.cage?1:(a.exclude_start<b.exclude_start?-1:1));
+    dlCsv(`hcm_${labKey}_exclusions`, ['cage','lab','exclude_start','exclude_end','action','minutes','note'], out);
+  }
 };
-function applyTheme(t){
-  document.documentElement.dataset.theme = t;
-  try { localStorage.setItem('hcm-theme', t); } catch(e){}
-  const b = document.getElementById('themeBtn'); if(b) b.textContent = t === 'light' ? '🌙' : '☀️';
-}
-window.toggleTheme = function(){ applyTheme(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light'); };
-
-window.openSettings = function(){ document.getElementById('set-name').value = cfgName(); document.getElementById('setModal').classList.add('open'); };
-window.saveSettings = function(){ localStorage.setItem(NAME_KEY, document.getElementById('set-name').value.trim()); closeModal('setModal'); };
-window.closeModal = function(id){ document.getElementById(id).classList.remove('open'); };
-window.refresh = async function(){ try { await reloadFromCloud(); } catch(e){ console.error(e); } };
-async function reloadFromCloud(){
-  setSyncStatus('saving','Reloading…');
-  const server = await loadFromSupabase();
-  if(server){ OCC = server.OCC; EVT = server.EVT; COH = server.COH; _syncedKeys = collectRows().keys; localStorage.setItem(CACHE_KEY, JSON.stringify({OCC,EVT,COH})); setSyncStatus('saved','Synced'); renderAll(); }
-  else setSyncStatus('error','No data');
-}
-
-// =====================================================================
-// EXPORT
-// =====================================================================
-window.toggleExport = function(ev){ ev.stopPropagation(); document.getElementById('exportMenu').classList.toggle('open'); };
-document.addEventListener('click', () => document.getElementById('exportMenu').classList.remove('open'));
-
-function csvCell(v){ v = v == null ? '' : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g,'""') + '"' : v; }
-function download(name, text, mime){
-  const blob = new Blob([text], { type: mime || 'text/plain' });
-  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
-}
-const stamp = () => nowInput().slice(0,10);
-
-// The headline export: one row per (event × affected cage) = intervals to drop from analysis.
-function exclusionRows(){
-  const out = [];
-  Object.values(EVT).forEach(e => {
-    const cages = e.cage === 0 ? CAGES.map(c => c.id) : [e.cage];
-    cages.forEach(cid => { const c = cageById(cid); if(!c) return;
-      out.push({ cage:c.cam, lab:c.lab, exclude_start:e.at, exclude_end:addMin(e.at, e.exclude_min), event:evtType(e.type).label, minutes:e.exclude_min, note:e.note||'' });
-    });
-  });
-  return out.sort((a,b) => a.cage < b.cage ? -1 : a.cage > b.cage ? 1 : (a.exclude_start < b.exclude_start ? -1 : 1));
-}
-window.exportExclusions = function(){
-  const rows = exclusionRows();
-  const head = ['cage','lab','exclude_start','exclude_end','event','minutes','note'];
-  const csv = [head.join(',')].concat(rows.map(r => head.map(h => csvCell(r[h])).join(','))).join('\n');
-  download(`hcm_exclusions_${stamp()}.csv`, csv, 'text/csv');
+window.exportCohorts=function(){
+  const head=['batch','start','end','genotypes','mice_per_cage','in_manifest','note'];
+  const rows=Object.values(COH).sort((a,b)=>cohKey(a.start)<cohKey(b.start)?-1:1);
+  dlCsv('hcm_cohorts', head, rows);
 };
-window.exportOccupancy = function(){
-  const head = ['cage','lab','mouse_id','sex','genotype','dob','entered_at','exited_at','status','note'];
-  const rows = Object.values(OCC).map(o => { const c = cageById(o.cage); return {
-    cage:c?c.cam:o.cage, lab:c?c.lab:'', mouse_id:o.mouse_id, sex:o.sex, genotype:o.genotype, dob:o.dob,
-    entered_at:o.entered_at, exited_at:o.exited_at||'', status:o.exited_at?'out':'inside', note:o.note||'' }; });
-  const csv = [head.join(',')].concat(rows.map(r => head.map(h => csvCell(r[h])).join(','))).join('\n');
-  download(`hcm_occupancy_${stamp()}.csv`, csv, 'text/csv');
-};
-window.exportEvents = function(){
-  const head = ['when','scope','type','exclude_minutes','note'];
-  const rows = Object.values(EVT).sort((a,b)=>(a.at<b.at?-1:1)).map(e => ({
-    when:e.at, scope:e.cage===0?'whole_room':(cageById(e.cage)?.cam||e.cage), type:evtType(e.type).label, exclude_minutes:e.exclude_min, note:e.note||'' }));
-  const csv = [head.join(',')].concat(rows.map(r => head.map(h => csvCell(r[h])).join(','))).join('\n');
-  download(`hcm_events_${stamp()}.csv`, csv, 'text/csv');
-};
-window.exportCohorts = function(){
-  const head = ['batch','start','end','genotypes','mice_per_cage','in_manifest','note'];
-  const rows = Object.values(COH).sort((a,b) => cohKey(a.start) < cohKey(b.start) ? -1 : 1);
-  const csv = [head.join(',')].concat(rows.map(r => head.map(h => csvCell(r[h])).join(','))).join('\n');
-  download(`hcm_cohorts_${stamp()}.csv`, csv, 'text/csv');
-};
-window.exportJSON = function(){
-  download(`hcm_metadata_${stamp()}.json`, JSON.stringify({ room:'EBS 58', cages:CAGES, occupants:Object.values(OCC), events:Object.values(EVT), cohorts:Object.values(COH) }, null, 2), 'application/json');
-};
+window.exportAllJSON=function(){ download(`hcm_metadata_${stamp()}.json`, JSON.stringify({room:'EBS 58',cages:CAGES,occupants:Object.values(OCC),events:Object.values(EVT),cohorts:Object.values(COH)},null,2),'application/json'); };
 
-// close modals on Escape / backdrop
-document.addEventListener('keydown', e => { if(e.key === 'Escape') document.querySelectorAll('.ov.open').forEach(o => o.classList.remove('open')); });
-document.querySelectorAll('.ov').forEach(ov => ov.addEventListener('click', e => { if(e.target === ov) ov.classList.remove('open'); }));
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.ov.open').forEach(o=>o.classList.remove('open')); });
+document.querySelectorAll('.ov').forEach(ov=>ov.addEventListener('click',e=>{ if(e.target===ov) ov.classList.remove('open'); }));
 
-applyTheme((() => { try { return localStorage.getItem('hcm-theme') || 'light'; } catch(e){ return 'light'; } })());
+applyTheme((()=>{ try{ return localStorage.getItem('hcm-theme')||'light'; }catch(e){ return 'light'; } })());
 init();
 })();
 </script>
