@@ -138,6 +138,7 @@
         <button onclick="exportExclusions()">Exclusion windows (CSV)</button>
         <button onclick="exportOccupancy()">Occupancy log (CSV)</button>
         <button onclick="exportEvents()">Disturbance events (CSV)</button>
+        <button onclick="exportCohorts()">Cohort history (CSV)</button>
         <button onclick="exportJSON()">Everything (JSON)</button>
       </div>
     </div>
@@ -156,6 +157,12 @@
     <h2>🐭 Occupancy log</h2>
     <div class="hint">When each mouse entered / left a cage. "Inside" = currently recording.</div>
     <div id="occLog"></div>
+  </div>
+
+  <div class="sect">
+    <h2>🗓 Cohort history <button class="btn btn-sec btn-sm" style="margin-left:8px;font-weight:600" onclick="openCohort(null)">＋ Cohort period</button></h2>
+    <div class="hint">Which batch/cohort occupied the cages over time — essential for segmenting analysis by cohort &amp; genotype.</div>
+    <div id="cohLog"></div>
   </div>
 </div>
 
@@ -187,6 +194,29 @@
     <div class="acts">
       <button class="btn btn-sec" onclick="closeModal('eventModal')">Cancel</button>
       <button class="btn btn-primary" onclick="saveEvent()">Log event</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cohort period modal -->
+<div class="ov" id="cohModal">
+  <div class="card">
+    <button class="x" onclick="closeModal('cohModal')">&times;</button>
+    <h3 id="coh-title">Cohort period</h3>
+    <div class="csub">A batch/cohort that occupied the cages over a date range — for segmenting analysis by cohort.</div>
+    <input type="hidden" id="coh-id">
+    <div class="grid2">
+      <div class="fg full"><label>Batch / name</label><input id="coh-batch" placeholder="e.g. Tau/WT/PD full-cohort"></div>
+      <div class="fg"><label>Start (date)</label><input id="coh-start" placeholder="2026-05-14"></div>
+      <div class="fg"><label>End (date or 'present')</label><input id="coh-end" placeholder="2026-07-21"></div>
+      <div class="fg full"><label>Genotypes</label><input id="coh-geno" placeholder="e.g. Tau, WT, PD"></div>
+      <div class="fg"><label>Mice per cage</label><input id="coh-mpc" placeholder="e.g. 2  or  ♀×3 / ♂×2"></div>
+      <div class="fg"><label>In manifest</label><input id="coh-man" placeholder="e.g. 12,499 chunks"></div>
+      <div class="fg full"><label>Note</label><input id="coh-note" placeholder="e.g. ~2 mo"></div>
+    </div>
+    <div class="acts">
+      <button class="btn btn-sec" onclick="closeModal('cohModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCohort()">Save</button>
     </div>
   </div>
 </div>
@@ -269,6 +299,7 @@ const mouseIconEl = (o,i) => `<span class="mouseicon${(i||0)%2?' flip':''}" titl
 // =====================================================================
 let OCC = {};   // id -> { id, cage, mouse_id, lab, genotype, sex, dob, entered_at, exited_at, note }
 let EVT = {};   // id -> { id, cage, type, at, exclude_min, note }
+let COH = {};   // id -> { id, batch, start, end, genotypes, mice_per_cage, in_manifest, note }  (room-level cohort/batch history)
 let _saving = false, _dirty = false, _syncTimer = null, _syncedKeys = {};
 
 const cfgName = () => { try { return localStorage.getItem(NAME_KEY) || ''; } catch { return ''; } };
@@ -301,9 +332,9 @@ function esc(s){ const d = document.createElement('div'); d.textContent = s == n
 // =====================================================================
 // SYNC — diff-based per-row upserts (two people never clobber each other)
 // =====================================================================
-function collectRows(occ, evt){
-  occ = occ || OCC; evt = evt || EVT;
-  const keys = {}, rows = { occupants:[], events:[] };
+function collectRows(occ, evt, coh){
+  occ = occ || OCC; evt = evt || EVT; coh = coh || COH;
+  const keys = {}, rows = { occupants:[], events:[], cohorts:[] };
   Object.values(occ).forEach(o => {
     const { id, cage, mouse_id, ...meta } = o;
     keys['o:' + id] = JSON.stringify({ cage, mouse_id, ...meta });
@@ -314,6 +345,11 @@ function collectRows(occ, evt){
     keys['e:' + id] = JSON.stringify({ cage, ...meta });
     rows.events.push({ id, cage, meta });
   });
+  Object.values(coh).forEach(c => {
+    const { id, ...meta } = c;
+    keys['h:' + id] = JSON.stringify(meta);
+    rows.cohorts.push({ id, meta });
+  });
   return { keys, rows };
 }
 
@@ -323,11 +359,13 @@ async function syncToSupabase(){
   const chg = (arr, kf) => arr.filter(x => keys[kf(x)] !== _syncedKeys[kf(x)]);
   const chOcc = chg(rows.occupants, o => 'o:' + o.id);
   const chEvt = chg(rows.events,    e => 'e:' + e.id);
+  const chCoh = chg(rows.cohorts,   c => 'h:' + c.id);
   const dels = Object.keys(_syncedKeys).filter(k => !(k in keys));
-  if(!chOcc.length && !chEvt.length && !dels.length) return;
+  if(!chOcc.length && !chEvt.length && !chCoh.length && !dels.length) return;
   const up = (t, b) => sb(t, { method:'POST', headers:{ Prefer:'resolution=merge-duplicates,return=minimal' }, body:b });
   if(chOcc.length) await up('hcm_occupants', chOcc.map(o => Object.assign({}, o, { updated_at:stamp, updated_by:who })));
   if(chEvt.length) await up('hcm_events',    chEvt.map(e => Object.assign({}, e, { updated_at:stamp, updated_by:who })));
+  if(chCoh.length) await up('hcm_cohorts',   chCoh.map(c => Object.assign({}, c, { updated_at:stamp, updated_by:who })));
   for(const k of dels) await deleteRowByKey(k);
   _syncedKeys = keys;
 }
@@ -337,13 +375,14 @@ async function deleteRowByKey(k){
   try {
     if(kind === 'o') await sb(`hcm_occupants?id=eq.${encodeURIComponent(id)}`, { method:'DELETE', headers:{ Prefer:'return=minimal' } });
     else if(kind === 'e') await sb(`hcm_events?id=eq.${encodeURIComponent(id)}`, { method:'DELETE', headers:{ Prefer:'return=minimal' } });
+    else if(kind === 'h') await sb(`hcm_cohorts?id=eq.${encodeURIComponent(id)}`, { method:'DELETE', headers:{ Prefer:'return=minimal' } });
   } catch(e){ console.error('delete failed', k, e); }
 }
 
 function setSyncStatus(state, text){ const el = document.getElementById('syncStatus'); el.className = 'sync-status ' + state; el.textContent = text || state; }
 
 function saveLocal(){
-  localStorage.setItem(CACHE_KEY, JSON.stringify({ OCC, EVT }));
+  localStorage.setItem(CACHE_KEY, JSON.stringify({ OCC, EVT, COH }));
   _dirty = true; setSyncStatus('saving','Saving…');
   clearTimeout(_syncTimer); _syncTimer = setTimeout(runSync, 1200);
   renderAll();
@@ -365,15 +404,20 @@ document.addEventListener('visibilitychange', () => { if(document.visibilityStat
 async function loadFromSupabase(){
   const [occ, evt] = await Promise.all([ sb('hcm_occupants?select=*'), sb('hcm_events?select=*') ]);
   if(occ == null && evt == null) return null;
-  const O = {}, E = {};
+  // cohort table is optional — if the migration for it hasn't been run yet, don't break the whole app
+  let coh = [];
+  try { coh = await sb('hcm_cohorts?select=*') || []; } catch(e){ console.warn('hcm_cohorts not ready (run the migration to enable cohort history):', e.message); }
+  const O = {}, E = {}, C = {};
   (occ || []).forEach(r => { O[r.id] = Object.assign({ id:r.id, cage:r.cage, mouse_id:r.mouse_id }, r.meta || {}); });
   (evt || []).forEach(r => { E[r.id] = Object.assign({ id:r.id, cage:r.cage }, r.meta || {}); });
-  return { OCC:O, EVT:E };
+  (coh || []).forEach(r => { C[r.id] = Object.assign({ id:r.id }, r.meta || {}); });
+  return { OCC:O, EVT:E, COH:C };
 }
 // Fold any local-only rows (unsynced edits) into the server copy — never delete, only add.
 function reconcile(server, local){
   if(!local) return server;
-  ['OCC','EVT'].forEach(kind => {
+  ['OCC','EVT','COH'].forEach(kind => {
+    if(!server[kind]) server[kind] = {};
     const s = server[kind], l = local[kind] || {};
     Object.keys(l).forEach(id => { if(!(id in s)) s[id] = l[id]; });
   });
@@ -387,10 +431,10 @@ async function init(){
   try {
     const server = await loadFromSupabase();
     if(server){
-      const serverKeys = collectRows(server.OCC, server.EVT).keys;
+      const serverKeys = collectRows(server.OCC, server.EVT, server.COH).keys;
       reconcile(server, local);
-      OCC = server.OCC; EVT = server.EVT; _syncedKeys = serverKeys;
-      localStorage.setItem(CACHE_KEY, JSON.stringify({ OCC, EVT }));
+      OCC = server.OCC; EVT = server.EVT; COH = server.COH; _syncedKeys = serverKeys;
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ OCC, EVT, COH }));
       loaded = true;
       const recovered = Object.keys(collectRows().keys).length - Object.keys(serverKeys).length;
       if(recovered > 0){ setSyncStatus('saving', `Recovering ${recovered} unsynced edit(s)…`); runSync(); }
@@ -398,8 +442,8 @@ async function init(){
     }
   } catch(e){ console.error('Supabase load failed:', e); }
   if(!loaded){
-    if(local && (local.OCC || local.EVT)){ OCC = local.OCC || {}; EVT = local.EVT || {}; _syncedKeys = {}; loaded = true; setSyncStatus('error','Offline (cached) — will sync when back'); runSync(); }
-    else { OCC = {}; EVT = {}; setSyncStatus('error','No data — check connection'); }
+    if(local && (local.OCC || local.EVT || local.COH)){ OCC = local.OCC || {}; EVT = local.EVT || {}; COH = local.COH || {}; _syncedKeys = {}; loaded = true; setSyncStatus('error','Offline (cached) — will sync when back'); runSync(); }
+    else { OCC = {}; EVT = {}; COH = {}; setSyncStatus('error','No data — check connection'); }
   }
   renderAll();
 }
@@ -420,7 +464,7 @@ const eventsForCage = n => Object.values(EVT).filter(e => e.cage === 0 || e.cage
 // =====================================================================
 // RENDER — the room
 // =====================================================================
-function renderAll(){ renderRoom(); renderEventLog(); renderOccLog(); }
+function renderAll(){ renderRoom(); renderEventLog(); renderOccLog(); renderCohorts(); }
 
 function cageHtml(c){
   const occ = occInCage(c.id);
@@ -597,6 +641,55 @@ window.deleteEvent = function(id){
 };
 
 // =====================================================================
+// COHORT HISTORY — room-level batch timeline (for segmenting analysis)
+// =====================================================================
+function renderCohorts(){
+  const list = Object.values(COH).sort((a,b) => (a.start||'') < (b.start||'') ? -1 : 1);
+  const host = document.getElementById('cohLog');
+  if(!host) return;
+  if(!list.length){ host.innerHTML = '<div class="empty">No cohort periods yet. Click “＋ Cohort period” to add the batch history.</div>'; return; }
+  host.innerHTML = `<table><thead><tr>
+    <th>Batch</th><th>Dates</th><th>Genotypes</th><th>Mice/cage</th><th>In manifest</th><th>Note</th><th></th></tr></thead><tbody>
+    ${list.map(c => `<tr>
+      <td style="font-weight:700">${esc(c.batch||'—')}</td>
+      <td class="tdim">${esc(c.start||'?')} → ${esc(c.end||'present')}</td>
+      <td>${esc(c.genotypes||'')}</td>
+      <td>${esc(c.mice_per_cage||'')}</td>
+      <td class="tdim">${esc(c.in_manifest||'')}</td>
+      <td class="tdim">${esc(c.note||'')}</td>
+      <td style="white-space:nowrap"><button class="btn btn-sec btn-sm" onclick="openCohort('${c.id}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="deleteCohort('${c.id}')">✕</button></td>
+    </tr>`).join('')}
+  </tbody></table>`;
+}
+window.openCohort = function(id){
+  const c = id ? COH[id] : {};
+  document.getElementById('coh-title').textContent = id ? 'Edit cohort period' : 'Add cohort period';
+  document.getElementById('coh-id').value    = id || '';
+  document.getElementById('coh-batch').value = c.batch || '';
+  document.getElementById('coh-start').value = c.start || '';
+  document.getElementById('coh-end').value   = c.end || '';
+  document.getElementById('coh-geno').value  = c.genotypes || '';
+  document.getElementById('coh-mpc').value   = c.mice_per_cage || '';
+  document.getElementById('coh-man').value   = c.in_manifest || '';
+  document.getElementById('coh-note').value  = c.note || '';
+  document.getElementById('cohModal').classList.add('open');
+};
+window.saveCohort = function(){
+  const id = document.getElementById('coh-id').value || ('coh_' + uid());
+  COH[id] = { id,
+    batch:         document.getElementById('coh-batch').value.trim(),
+    start:         document.getElementById('coh-start').value.trim(),
+    end:           document.getElementById('coh-end').value.trim(),
+    genotypes:     document.getElementById('coh-geno').value.trim(),
+    mice_per_cage: document.getElementById('coh-mpc').value.trim(),
+    in_manifest:   document.getElementById('coh-man').value.trim(),
+    note:          document.getElementById('coh-note').value.trim(),
+  };
+  saveLocal(); closeModal('cohModal');
+};
+window.deleteCohort = function(id){ if(!confirm('Delete this cohort period?')) return; delete COH[id]; saveLocal(); };
+
+// =====================================================================
 // SETTINGS / MISC
 // =====================================================================
 window.openSettings = function(){ document.getElementById('set-name').value = cfgName(); document.getElementById('setModal').classList.add('open'); };
@@ -606,7 +699,7 @@ window.refresh = async function(){ try { await reloadFromCloud(); } catch(e){ co
 async function reloadFromCloud(){
   setSyncStatus('saving','Reloading…');
   const server = await loadFromSupabase();
-  if(server){ OCC = server.OCC; EVT = server.EVT; _syncedKeys = collectRows().keys; localStorage.setItem(CACHE_KEY, JSON.stringify({OCC,EVT})); setSyncStatus('saved','Synced'); renderAll(); }
+  if(server){ OCC = server.OCC; EVT = server.EVT; COH = server.COH; _syncedKeys = collectRows().keys; localStorage.setItem(CACHE_KEY, JSON.stringify({OCC,EVT,COH})); setSyncStatus('saved','Synced'); renderAll(); }
   else setSyncStatus('error','No data');
 }
 
@@ -656,8 +749,14 @@ window.exportEvents = function(){
   const csv = [head.join(',')].concat(rows.map(r => head.map(h => csvCell(r[h])).join(','))).join('\n');
   download(`hcm_events_${stamp()}.csv`, csv, 'text/csv');
 };
+window.exportCohorts = function(){
+  const head = ['batch','start','end','genotypes','mice_per_cage','in_manifest','note'];
+  const rows = Object.values(COH).sort((a,b) => (a.start||'') < (b.start||'') ? -1 : 1);
+  const csv = [head.join(',')].concat(rows.map(r => head.map(h => csvCell(r[h])).join(','))).join('\n');
+  download(`hcm_cohorts_${stamp()}.csv`, csv, 'text/csv');
+};
 window.exportJSON = function(){
-  download(`hcm_metadata_${stamp()}.json`, JSON.stringify({ room:'EBS 58', cages:CAGES, occupants:Object.values(OCC), events:Object.values(EVT) }, null, 2), 'application/json');
+  download(`hcm_metadata_${stamp()}.json`, JSON.stringify({ room:'EBS 58', cages:CAGES, occupants:Object.values(OCC), events:Object.values(EVT), cohorts:Object.values(COH) }, null, 2), 'application/json');
 };
 
 // close modals on Escape / backdrop

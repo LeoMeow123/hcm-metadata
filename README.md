@@ -32,7 +32,10 @@ there to relabel or re-map.
 - **Exclusion windows** — the scientific point. Every event = an interval `[event, event + N min]`
   to drop from analysis. **Export → Exclusion windows (CSV)** gives your pipeline one row per
   (event × affected cage): `cage, lab, exclude_start, exclude_end, event, minutes, note`.
-- **Exports** — exclusion windows, occupancy log, disturbance events (all CSV), or everything (JSON).
+- **Cohort history** — a room-level timeline of which batch/cohort occupied the cages over each
+  date range (batch, dates, genotypes, mice/cage, manifest status, note) — essential for
+  segmenting analysis by cohort. Seeded with the known APP-study → WT-cohort history.
+- **Exports** — exclusion windows, occupancy log, disturbance events, cohort history (all CSV), or everything (JSON).
 
 All timestamps are **San Diego (PT) wall-clock**, so they line up with the recording clock.
 
@@ -44,7 +47,9 @@ guarded by permissive RLS). Stored granularly — one row per occupancy record a
 Edits save to `localStorage` instantly, sync ~1.2 s after the last change (debounced), flush on
 tab-hide, and **reconcile** local-only edits against the server on load.
 
-Two tables: `hcm_occupants` and `hcm_events` (each a JSONB blob keyed by a generated id).
+Three tables: `hcm_occupants`, `hcm_events`, and `hcm_cohorts` (each a JSONB blob keyed by a
+generated id). `hcm_cohorts` is fetched defensively — if its migration hasn't been run, the app
+still works and just hides the cohort-history section.
 
 ## Setup
 
