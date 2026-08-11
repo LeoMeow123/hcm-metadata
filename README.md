@@ -6,7 +6,7 @@ downstream SLEAP / behavior analysis knows which time windows and which cohorts 
 
 Single-file vanilla-JS front end (`index.html`) backed by Supabase. **No build step, no dependencies.**
 
-> Live reference build (public sibling repo, GitHub Pages): https://leomeow123.github.io/hcm-metadata/
+> **Live:** https://talmolab.github.io/hcm-metadata/ — GitHub Pages, auto-deploys on merge to `main`.
 
 ---
 
@@ -63,7 +63,7 @@ data is mapped to physical positions.
 ## Running & hosting
 
 - **Local:** open `index.html` directly, or `python3 -m http.server` and visit it. It talks to Supabase over the network — no server of your own.
-- **Hosting:** this repo is **private**, so free GitHub Pages isn't available. Host the single file on any static host, or keep developing locally. (The public sibling repo above is Pages-hosted for reference.)
+- **Hosting:** published via **GitHub Pages** at https://talmolab.github.io/hcm-metadata/. The repo is private but talmolab's GitHub **Team** plan allows Pages from a private repo — the repo stays private while the built site is public. **Merges to `main` auto-deploy**, so open a PR, get it reviewed, merge, and it's live.
 
 ## Developing
 
