@@ -451,7 +451,7 @@ function cageHtml(c){
   const occ=occInCage(c.id);
   const list=occ.length?`<div class="ebslist">${occ.map(o=>`<div class="occrow" title="${esc(mouseLabel(o))}">${esc(mouseLabel(o))}</div>`).join('')}</div>`:'';
   const mice=occ.length?`<div class="ebsmice">${occ.map((o,i)=>mouseIconEl(o,i)).join('')}</div>`:`<div class="ebsempty">empty<br><span class="ebssub">click to add a mouse</span></div>`;
-  const nEv=eventsForCage(c.id).length;
+  const nEv=eventsForCage(c.id).filter(e=>isCurrentEvent(e,c.lab)).length;   // badge = current-cohort events only (past deaths/floods live in cohort history)
   return `<div class="ebscage" style="--lab:${LABS[c.lab]?LABS[c.lab].color:'#4f9cf9'}" onclick="openCage(${c.id})">
     <div class="ebscam"><span class="lens"></span><span class="camlbl">${c.cam}</span><span class="camct">· ${occ.length}</span></div>
     <div class="ebsbox">${list}${mice}</div>
