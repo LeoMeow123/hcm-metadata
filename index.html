@@ -104,6 +104,12 @@
   .tlm{font-size:9px;top:0}
   .tlm::before{content:'';position:absolute;top:-2px;left:50%;width:1px;height:3px;background:var(--border2)}
   .tly{font-size:11px;font-weight:700;top:0}
+  .recbadge{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:var(--red);background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.32);border-radius:16px;padding:4px 12px;margin:2px 0 12px}
+  .pulse{width:9px;height:9px;border-radius:50%;background:var(--red);animation:recpulse 1.6s infinite}
+  @keyframes recpulse{0%{box-shadow:0 0 0 0 rgba(239,68,68,.55)}70%{box-shadow:0 0 0 7px rgba(239,68,68,0)}100%{box-shadow:0 0 0 0 rgba(239,68,68,0)}}
+  .tlnow{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--red);opacity:.75;z-index:4}
+  .tlnowlbl{color:var(--red);font-weight:700}
+  .tlseg.live{box-shadow:inset -3px 0 0 rgba(255,255,255,.55)}
   .subtabs{display:flex;gap:6px;margin-bottom:8px}
   .subtab{padding:5px 13px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;background:var(--bg3);border:1px solid var(--border2);border-radius:16px;font-family:inherit}
   .subtab.active{color:var(--accent-fg);background:var(--accent);border-color:var(--accent)}
@@ -217,9 +223,11 @@
       <h2>🗓 <span id="cohLabTitle">AD · Kuo-Fen</span> cohort history
         <button class="btn btn-sec btn-sm" style="margin-left:8px;font-weight:600" onclick="openCohort(null)">＋ Cohort period</button>
         <button class="btn btn-sec btn-sm" style="font-weight:600" onclick="exportCohorts()">⤓ CSV</button></h2>
-      <div class="hint">Genotype in each cage over time (per-cage swimlane); <b>†</b> = mouse death. Batch table below.</div>
+      <div class="hint">Genotype in each cage over time (per-cage swimlane); <b>†</b> = mouse death. Batch table + past-cohort events below.</div>
+      <div id="cohRec"></div>
       <div id="cohTimeline"></div>
       <div id="cohLog"></div>
+      <div id="cohEvents"></div>
     </div>
   </div>
 </div>
@@ -431,9 +439,14 @@ function mouseLabel(o){ const b=[]; if(o.mouse_id)b.push(o.mouse_id); if(o.sex)b
 const genoChipColor = g => { if(!g) return '#94a3b8'; let h=0; for(let i=0;i<g.length;i++)h=(h*31+g.charCodeAt(i))%360; return `hsl(${h},55%,60%)`; };
 const eventsForCage = n => Object.values(EVT).filter(e=>e.cage===ROOM||e.cage===n);
 const labEvents = labKey => Object.values(EVT).filter(e=>e.cage===ROOM||e.cage===TYE_CAGE||LABS[labKey].cages.includes(e.cage));
+// current-cohort vs past: an event belongs to the CURRENT cohort if it's on/after that cohort's start
+// (a "remove cohort" is always the prior cohort leaving, so it stays with the past).
+function evMs(s){ if(!s) return null; const p=String(s).split('T')[0].split('-').map(Number); return p[0]?new Date(p[0],(p[1]||1)-1,p[2]||1).getTime():null; }
+function currentStartMs(lab){ const cs=Object.values(COH).filter(c=>(c.lab||'AD')===lab); if(!cs.length) return -Infinity; const pres=cs.filter(c=>!c.end||c.end==='present'); const pick=(pres.length?pres:cs).reduce((a,b)=>cohKey(a.start)>cohKey(b.start)?a:b); const m=evMs(cohKey(pick.start)); return m==null?-Infinity:m; }
+const isCurrentEvent = (e,lab) => e.type!=='remove_cohort' && (evMs(e.at)==null || evMs(e.at) >= currentStartMs(lab));
 
 // ===== RENDER =====
-function renderAll(){ renderLab('AD'); renderLab('ALS'); renderCohortTimeline(); renderCohorts(); }
+function renderAll(){ renderLab('AD'); renderLab('ALS'); renderCohortTimeline(); renderCohorts(); renderCohortEvents(); }
 function cageHtml(c){
   const occ=occInCage(c.id);
   const list=occ.length?`<div class="ebslist">${occ.map(o=>`<div class="occrow" title="${esc(mouseLabel(o))}">${esc(mouseLabel(o))}</div>`).join('')}</div>`:'';
@@ -448,14 +461,13 @@ function cageHtml(c){
 function renderLab(labKey){
   const L=LABS[labKey];
   const rk=document.getElementById('room-'+labKey); if(rk) rk.innerHTML=`<div class="ebsrack">${L.cages.map(id=>cageHtml(cageById(id))).join('')}</div>`;
-  renderEventTable('evt-'+labKey, labEvents(labKey));
+  renderEventTable('evt-'+labKey, labEvents(labKey).filter(e=>isCurrentEvent(e,labKey)));
   renderOccTable('occ-'+labKey, Object.values(OCC).filter(o=>L.cages.includes(o.cage)));
 }
-function renderEventTable(hostId, evts){
-  const host=document.getElementById(hostId); if(!host) return;
+function eventTableHtml(evts, emptyMsg){
   evts=evts.slice().sort((a,b)=>(a.at||'')<(b.at||'')?1:-1);
-  if(!evts.length){ host.innerHTML='<div class="empty">No events logged yet. Use “＋ Entry an event”.</div>'; return; }
-  host.innerHTML=`<table><thead><tr><th>When</th><th>Action</th><th>Affected</th><th>Excluded window</th><th>Lab · by</th><th>Note</th><th></th></tr></thead><tbody>
+  if(!evts.length) return `<div class="empty">${emptyMsg!=null?emptyMsg:'No events logged yet. Use “＋ Entry an event”.'}</div>`;
+  return `<table><thead><tr><th>When</th><th>Action</th><th>Affected</th><th>Excluded window</th><th>Lab · by</th><th>Note</th><th></th></tr></thead><tbody>
     ${evts.map(e=>{ const t=actType(e.type); const win=e.exclude_min>0?`${fmtDT(e.at)} → ${fmtDT(addMin(e.at,e.exclude_min))} <span style="opacity:.6">(${e.exclude_min}m)</span>`:'<span style="opacity:.6">— no exclusion</span>';
       return `<tr>
         <td>${fmtDT(e.at)}</td>
@@ -467,6 +479,12 @@ function renderEventTable(hostId, evts){
         <td><button class="btn btn-danger btn-sm" onclick="deleteEvent('${e.id}')">✕</button></td>
       </tr>`; }).join('')}
   </tbody></table>`;
+}
+function renderEventTable(hostId, evts){ const host=document.getElementById(hostId); if(host) host.innerHTML=eventTableHtml(evts); }
+function renderCohortEvents(){
+  const host=document.getElementById('cohEvents'); if(!host) return;
+  const past=labEvents(COH_LAB).filter(e=>!isCurrentEvent(e,COH_LAB));
+  host.innerHTML = past.length ? '<div class="divh" style="margin-top:22px">Past-cohort events (deaths, cohort swaps, disturbances)</div>'+eventTableHtml(past,'') : '';
 }
 function renderOccTable(hostId, occ){
   const host=document.getElementById(hostId); if(!host) return;
@@ -488,8 +506,11 @@ function renderOccTable(hostId, occ){
 // cohort swimlane timeline
 function renderCohortTimeline(){
   const host=document.getElementById('cohTimeline'); if(!host) return;
+  const recHost=document.getElementById('cohRec');
   const all=Object.values(COH).filter(c=>(c.lab||'AD')===COH_LAB);
   const list=all.slice().sort((a,b)=>cohKey(a.start)<cohKey(b.start)?-1:1);
+  const present=list.find(c=>!c.end||c.end==='present');
+  if(recHost) recHost.innerHTML = present ? `<div class="recbadge"><span class="pulse"></span> Recording now — ${esc(present.batch||'current cohort')} · since ${esc(present.start||'')}</div>` : '';
   if(!all.length){ host.innerHTML='<div class="empty" style="margin-bottom:14px">No cohort data for this lab yet.</div>'; return; }
   const toDate=s=>{ s=cohKey(s); const p=(s||'').split('-').map(Number); return p[0]?new Date(p[0],(p[1]||1)-1,p[2]||1).getTime():null; };
   const dtDate=s=>{ if(!s) return null; const p=String(s).split('T')[0].split('-').map(Number); return p[0]?new Date(p[0],(p[1]||1)-1,p[2]||1).getTime():null; };
@@ -503,19 +524,21 @@ function renderCohortTimeline(){
   const genos=new Set(); all.forEach(c=>Object.values(c.cages||{}).forEach(g=>genos.add(g)));
   const labCages = LABS[COH_LAB]?LABS[COH_LAB].cages:[];
   const deaths=Object.values(EVT).filter(e=>e.type==='death'&&labCages.includes(e.cage));
-  const seg=(c,n)=>{ const g=(c.cages||{})[n]; if(!g) return ''; const s=toDate(c.start); if(s==null) return ''; const e=(!c.end||c.end==='present')?now:toDate(c.end); const l=pct(s), w=Math.max(0.6,pct(e)-pct(s));
-    return `<div class="tlseg" style="left:${l}%;width:${w}%;background:${genoColor(g)}" title="${esc(c.batch||'')} · ${esc(g)} · ${esc(c.start)} → ${esc(c.end||'present')}">${w>7?esc(g):''}</div>`; };
+  const seg=(c,n)=>{ const g=(c.cages||{})[n]; if(!g) return ''; const s=toDate(c.start); if(s==null) return ''; const live=(!c.end||c.end==='present'); const e=live?now:toDate(c.end); const l=pct(s), w=Math.max(0.6,pct(e)-pct(s));
+    return `<div class="tlseg${live?' live':''}" style="left:${l}%;width:${w}%;background:${genoColor(g)}" title="${esc(c.batch||'')} · ${esc(g)} · ${esc(c.start)} → ${esc(c.end||'present')}">${w>7?esc(g):''}</div>`; };
   const dmark=n=>deaths.filter(e=>e.cage===n).map(e=>{ const tt=dtDate(e.at); if(tt==null||tt<t0||tt>t1) return ''; return `<div class="tldeath" style="left:${pct(tt)}%" title="† ${esc(e.at)} — ${esc(e.note||'death')}">†</div>`; }).join('');
-  const trackRows=rows.map(n=>`<div class="tlrow"><div class="tllbl">${cageById(n)?cageById(n).cam:('Cam '+n)}</div><div class="tltrack">${list.map(c=>seg(c,n)).join('')}${dmark(n)}</div></div>`).join('');
+  const nowLine=`<div class="tlnow" style="left:${pct(now)}%" title="now — recording"></div>`;
+  const trackRows=rows.map(n=>`<div class="tlrow"><div class="tllbl">${cageById(n)?cageById(n).cam:('Cam '+n)}</div><div class="tltrack">${list.map(c=>seg(c,n)).join('')}${dmark(n)}${nowLine}</div></div>`).join('');
   // month ticks (top row) + year ticks (bottom row)
   let mticks=''; let d=new Date(new Date(t0).getFullYear(),new Date(t0).getMonth(),1);
   while(d.getTime()<=t1){ const tt=d.getTime(); if(tt>=t0) mticks+=`<span class="tltick tlm" style="left:${pct(tt)}%">${MON[d.getMonth()]}</span>`; d=new Date(d.getFullYear(),d.getMonth()+1,1); }
+  mticks+=`<span class="tltick tlm tlnowlbl" style="left:${pct(now)}%">now</span>`;
   let yticks=''; const y0=new Date(t0).getFullYear(), y1=new Date(t1).getFullYear();
   for(let y=y0;y<=y1+1;y++){ const tt=new Date(y,0,1).getTime(); if(tt<t0||tt>t1) continue; yticks+=`<span class="tltick tly" style="left:${pct(tt)}%">${y}</span>`; }
   const legend=[...genos].map(g=>`<span><span class="sw" style="background:${genoColor(g)}"></span>${esc(g)}</span>`).join('')+(deaths.length?`<span style="font-weight:700;color:#111"><span style="text-shadow:0 0 2px #fff">†</span> death</span>`:'');
   host.innerHTML=`<div class="tl">${trackRows}</div><div class="tlaxis"><div class="tlmrow">${mticks}</div><div class="tlyrow">${yticks}</div></div><div class="tllegend">${legend}</div>`;
 }
-window.cohLab=function(l){ COH_LAB=l; document.querySelectorAll('.subtab').forEach(b=>b.classList.toggle('active',b.dataset.coh===l)); const t=document.getElementById('cohLabTitle'); if(t) t.textContent=l==='AD'?'AD · Kuo-Fen':'ALS · Eiman'; renderCohortTimeline(); renderCohorts(); };
+window.cohLab=function(l){ COH_LAB=l; document.querySelectorAll('.subtab').forEach(b=>b.classList.toggle('active',b.dataset.coh===l)); const t=document.getElementById('cohLabTitle'); if(t) t.textContent=l==='AD'?'AD · Kuo-Fen':'ALS · Eiman'; renderCohortTimeline(); renderCohorts(); renderCohortEvents(); };
 function renderCohorts(){
   const list=Object.values(COH).filter(c=>(c.lab||'AD')===COH_LAB).sort((a,b)=>cohKey(a.start)<cohKey(b.start)?-1:1);
   const host=document.getElementById('cohLog'); if(!host) return;
